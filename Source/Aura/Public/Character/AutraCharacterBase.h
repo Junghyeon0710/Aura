@@ -6,24 +6,18 @@
 #include "GameFramework/Character.h"
 #include "AutraCharacterBase.generated.h"
 
-UCLASS()
+UCLASS(Abstract) // 클래스 레벨 소환 방지
 class AURA_API AAutraCharacterBase : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AAutraCharacterBase();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TObjectPtr<USkeletalMeshComponent> Weapon;
 
 };
