@@ -3,6 +3,9 @@
 
 #include "Character/AuraCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "PlayerState/AuraPlayerState.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 
 AAuraCharacter::AAuraCharacter()
 {
@@ -14,5 +17,30 @@ AAuraCharacter::AAuraCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
+}
+
+void AAuraCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	// 어빌리티 액터 정보 서버에 초기화
+	InitAbilityActorInfo();
+
+}
+
+void AAuraCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	// 어빌리티 액터 정보 클라이언트에 초기화
+	InitAbilityActorInfo();
+}
+
+void AAuraCharacter::InitAbilityActorInfo()
+{
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
+	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
+	AttributeSet = AuraPlayerState->GetAttributeSet();
 }
 

@@ -12,6 +12,11 @@ AAutraCharacterBase::AAutraCharacterBase()
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
+UAbilitySystemComponent* AAutraCharacterBase::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
 void AAutraCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
