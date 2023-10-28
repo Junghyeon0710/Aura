@@ -3,3 +3,10 @@
 
 #include "UI/WidgetController/AuraWidgetController.h"
 
+void UAuraWidgetController::SetWidgetControllerParms(const FWidgetControllerParms& WCparms)
+{
+	PlayerController = WCparms.PlayerController;
+	PlayerState = WCparms.PlayerState;
+	AbilitySystemComponent = WCparms.AbilitySystemComponent;
+	AttributeSet = WCparms.AttributeSet;
+}
