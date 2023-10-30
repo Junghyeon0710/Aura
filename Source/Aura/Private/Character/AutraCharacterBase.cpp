@@ -23,4 +23,8 @@ void AAutraCharacterBase::BeginPlay()
 	
 }
 
+void AAutraCharacterBase::InitAbilityActorInfo()
+{
+}
+
 
