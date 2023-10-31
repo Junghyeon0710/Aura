@@ -20,9 +20,10 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 {
 	const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
 
+	/** 체력값이 바뀌면 호출되는 델리게이트에 람다로 바인딩*/
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
 		AuraAttributeSet->GetHealthAttribute()).AddLambda(
-			[this](const FOnAttributeChangeData& Data)
+			[this](const FOnAttributeChangeData& Data) //값이 바뀐값이 들어있음
 			{
 				OnHealthChanged.Broadcast(Data.NewValue);
 			}
