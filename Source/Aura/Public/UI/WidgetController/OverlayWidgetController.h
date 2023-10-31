@@ -12,23 +12,20 @@ struct FUIWidgetRow : public FTableRowBase
 {
 	GENERATED_BODY()
 
-		UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		FGameplayTag MessageTag = FGameplayTag();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayTag MessageTag = FGameplayTag();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		FText Message = FText();
+	FText Message = FText();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		TSubclassOf<class UAuraUserWidget> MessageWidget;
+	TSubclassOf<class UAuraUserWidget> MessageWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		UTexture2D* Image = nullptr;
+	UTexture2D* Image = nullptr;
 };
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSiganture, float, NewValue);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSiganture, float, NewHealth);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxHealthChangedSiganture, float, NewMaxHealth);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnManaChangedSiganture, float, NewMana);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxManaChangedSiganture, float, NewMaxMana);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, Row);
 
 
@@ -45,16 +42,16 @@ public:
 	virtual void BindCallbacksToDependencies() override;
 	
 	UPROPERTY(BlueprintAssignable,Category ="GAS|Attributes")
-	FOnHealthChangedSiganture OnHealthChanged;
+	FOnAttributeChangedSiganture OnHealthChanged;
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
-	FOnMaxHealthChangedSiganture OnMaxHealthChanged;
+	FOnAttributeChangedSiganture OnMaxHealthChanged;
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
-	FOnManaChangedSiganture OnManaChanged;
+	FOnAttributeChangedSiganture OnManaChanged;
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
-	FOnMaxManaChangedSiganture OnMaxManaChanged;
+	FOnAttributeChangedSiganture OnMaxManaChanged;
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Messages")
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;
@@ -62,11 +59,6 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
-
-	void HealthChanged(const FOnAttributeChangeData& Data) const;
-	void MaxHealthChanged(const FOnAttributeChangeData& Data)const;
-	void ManaChanged(const FOnAttributeChangeData& Data) const;
-	void MaxManaChanged(const FOnAttributeChangeData& Data)const;
 	
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
