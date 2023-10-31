@@ -64,21 +64,64 @@ public:
 	*/
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
-	FGameplayAttributeData Strength;
+	FGameplayAttributeData Strength; //물리데미지
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Strength);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
-	FGameplayAttributeData Intelligence;
+	FGameplayAttributeData Intelligence; //마법데미지
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Intelligence);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
-	FGameplayAttributeData Resilience;
+	FGameplayAttributeData Resilience; //방어구 관통력
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resilience);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
-	FGameplayAttributeData Vigor;
+	FGameplayAttributeData Vigor; //회복증가량
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Vigor);
 	
+	/*
+	* 보조 속성
+	*/
+
+	/** 방어력 */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Armor, Category = "Secondary Attributes")
+	FGameplayAttributeData Armor; 
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Armor);
+
+	/** 방어력 */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ ArmorPenetration, Category = "Secondary Attributes")
+	FGameplayAttributeData ArmorPenetration; 
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ArmorPenetration);
+
+	/** 방어력 */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ BlockChance, Category = "Secondary Attributes")
+	FGameplayAttributeData BlockChance;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, BlockChance);
+
+	/** 방어력 */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ CriticalHitChance, Category = "Secondary Attributes")
+	FGameplayAttributeData CriticalHitChance;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitChance);
+
+	/** 방어력 */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ CriticalHitDamage, Category = "Secondary Attributes")
+	FGameplayAttributeData CriticalHitDamage;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitDamage);
+
+	/** 방어력 */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ CriticalHitResistance, Category = "Secondary Attributes")
+	FGameplayAttributeData CriticalHitResistance;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitResistance);
+
+	/** 방어력 */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ HealthRegeneration, Category = "Secondary Attributes")
+	FGameplayAttributeData HealthRegeneration;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, HealthRegeneration);
+
+	/** 방어력 */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ ManaRegeneration, Category = "Secondary Attributes")
+	FGameplayAttributeData ManaRegeneration;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegeneration);
 	
 	/*
 	* 중요 속성
@@ -123,6 +166,31 @@ public:
 
 	UFUNCTION()
 	void OnRep_Vigor(const FGameplayAttributeData& OldVigor) const;
+
+	
+	UFUNCTION()
+	void OnRep_Armor(const FGameplayAttributeData& OldArmor) const;
+
+	UFUNCTION()
+	void OnRep_ArmorPenetration(const FGameplayAttributeData& OldArmorPenetration) const;
+
+	UFUNCTION()
+	void OnRep_BlockChance(const FGameplayAttributeData& OldBlockChance) const;
+
+	UFUNCTION()
+	void OnRep_CriticalHitChance(const FGameplayAttributeData& OldCriticalHitChance) const;
+
+	UFUNCTION()
+	void OnRep_CriticalHitDamage(const FGameplayAttributeData& OldCriticalHitDamage) const;
+
+	UFUNCTION()
+	void OnRep_CriticalHitResistance(const FGameplayAttributeData& OldCriticalHitResistance) const;
+
+	UFUNCTION()
+	void OnRep_HealthRegeneration(const FGameplayAttributeData& OldHealthRegeneration) const;
+
+	UFUNCTION()
+	void OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const;
 
 private:
 
