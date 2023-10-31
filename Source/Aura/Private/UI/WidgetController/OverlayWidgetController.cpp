@@ -50,6 +50,7 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 				OnMaxManaChanged.Broadcast(Data.NewValue);
 			}
 	);
+
 	/* 포션 먹후 직후**/
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
 	[this](const FGameplayTagContainer& AssetTags)

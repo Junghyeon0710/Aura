@@ -60,7 +60,7 @@ public:
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)override;
 
 	/*
-	* 吝夸 加己
+	* 胶泡 加己
 	*/
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")

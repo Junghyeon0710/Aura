@@ -8,13 +8,14 @@
 //호출할 수 있는 함수를 만드는 것이 좋습니다.그것은 상당히 초기에 호출할 수 있는 지점입니다.
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
+	// 자신(Self)에게 어빌리티 효과가 적용될 때 호출되는 델리게이트입니다.
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::EffectApplied);
 }
 
 void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
 	FGameplayTagContainer TagContainer;
-	EffectSpec.GetAllAssetTags(TagContainer);
+	EffectSpec.GetAllAssetTags(TagContainer); //갖고 있는 테그를 전부 가져옴
 
-	EffectAssetTags.Broadcast(TagContainer);
+	EffectAssetTags.Broadcast(TagContainer); //OverlayWidgetController에 브로드케스트(전달)
 }

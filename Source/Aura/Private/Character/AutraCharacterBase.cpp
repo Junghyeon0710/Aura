@@ -2,6 +2,7 @@
 
 
 #include "Character/AutraCharacterBase.h"
+#include "AbilitySystemComponent.h"
 
 AAutraCharacterBase::AAutraCharacterBase()
 {
@@ -25,6 +26,15 @@ void AAutraCharacterBase::BeginPlay()
 
 void AAutraCharacterBase::InitAbilityActorInfo()
 {
+}
+
+void AAutraCharacterBase::InitializePrimaryAttributes() const
+{
+	check(IsValid(GetAbilitySystemComponent()));
+
+	const FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	const FGameplayEffectSpecHandle SpecHandle =  GetAbilitySystemComponent()->MakeOutgoingSpec(DefaultPrimaryAttributes, 1.f, ContextHandle);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), GetAbilitySystemComponent());
 }
 
 

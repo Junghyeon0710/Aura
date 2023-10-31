@@ -54,6 +54,7 @@ void AAuraEffectActor::ApplayEffectToTarget(AActor* TargetActor, TSubclassOf<UGa
     const FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 
     const bool bIninfinte = EffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite;
+   
     if (bIninfinte && InfiniteEffectRemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
     {
         ActiveEffectHandles.Add(ActiveEffectHandle, TargetASC);
