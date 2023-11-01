@@ -123,16 +123,16 @@ public:
 	FGameplayAttributeData ManaRegeneration;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegeneration);
 	
-	/*
-	* 중요 속성
-	*/
-	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_Health,Category = "Vital Attributes")
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes")
 	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Vital Attributes")
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth);
+	/*
+	* 중요 속성
+	*/
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Mana, Category = "Vital Attributes")
 	FGameplayAttributeData Mana;
@@ -147,15 +147,8 @@ public:
 	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
 
 	UFUNCTION()
-	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
-
-	UFUNCTION()
 	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;
 
-	UFUNCTION()
-	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
-
-	
 	//스텟
 	UFUNCTION()
 	void OnRep_Strength(const FGameplayAttributeData& OldStrength) const;
@@ -194,6 +187,12 @@ public:
 
 	UFUNCTION()
 	void OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const;
+
+	UFUNCTION()
+	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
+
+	UFUNCTION()
+	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
 
 private:
 

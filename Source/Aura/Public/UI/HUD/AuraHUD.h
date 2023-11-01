@@ -23,6 +23,7 @@ public:
 
 	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParms& WCParms);
 
+	//캐릭터에서 호출 
 	void InitOverlay(class APlayerController* PC, class APlayerState* PS,class  UAbilitySystemComponent* ASC, class UAttributeSet* AS);
 
 private:

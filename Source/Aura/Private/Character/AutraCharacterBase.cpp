@@ -43,6 +43,7 @@ void AAutraCharacterBase::InitializeDefaultAttributes() const
 {
 	ApplyEffectToSelf(DefaultPrimaryAttributes, 1.f);
 	ApplyEffectToSelf(DefaultSecondaryAttributes, 1.f);
+	//MaxHealth과 MaxMana를 따라가기때문에 먼저 해줘야 가능
 	ApplyEffectToSelf(DefaultVitalAttributes, 1.f);
 }
 
