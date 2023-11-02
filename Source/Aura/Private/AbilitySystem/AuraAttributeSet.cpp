@@ -11,29 +11,41 @@
 UAuraAttributeSet::UAuraAttributeSet()
 {
 	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
-	
-
+	/* ì£¼ìš” ì†ì„±**/
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Strength, GetStrengthAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Intelligence, GetIntelligenceAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Resilience, GetResilienceAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Vigor, GetVigorAttribute);
+
+	/* ë³´ì¡° ìŠ¤íƒ¯**/
+	TagsToAttributes.Add(GameplayTags.Attributes_secondary_Armor, GetArmorAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_secondary_ArmorPenetration, GetArmorPenetrationAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_secondary_BlockChance, GetBlockChanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_secondary_CriticalHitChance, GetCriticalHitChanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_secondary_CriticalHitDamage, GetCriticalHitDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_secondary_CriticalHitResistance, GetCriticalHitResistanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_secondary_HealthRegeneration, GetHealthRegenerationAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_secondary_ManaRegeneration, GetManaRegenerationAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_secondary_MaxHealth, GetMaxHealthAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_secondary_MaxMana, GetMaxManaAttribute);
+
 }
 
 
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	// ½ºÅİ
+	// ìŠ¤í…Ÿ
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Strength, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Intelligence, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Resilience, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Vigor, COND_None, REPNOTIFY_Always);
 
-	// Áß¿ä¼Ó¼º
+	// ì¤‘ìš”ì†ì„±
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Mana, COND_None, REPNOTIFY_Always);
 
-	//º¸Á¶ ¼Ó¼º
+	//ë³´ì¡° ì†ì„±
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Armor, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, ArmorPenetration, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, BlockChance, COND_None, REPNOTIFY_Always);
@@ -47,29 +59,29 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 }
 
-//°ªÀÌ ¹Ù²î±âÀü¿¡ ½ÇÇà µÊ, ÇöÀç °ª¿¡ ´ëÇÑ º¯°æ »çÇ×À» ¼öÁ¤ ÇÏ´Â °÷
-//Ã¼·Â°ú ¸¶³ª¸¦ ¹Ù²Ù±âÀü Å¬·¥ÇÁ ÇÔ¼ö·Î 0~max»çÀÌ°ªÀ¸·Î °íÁ¤
+//ê°’ì´ ë°”ë€Œê¸°ì „ì— ì‹¤í–‰ ë¨, í˜„ì¬ ê°’ì— ëŒ€í•œ ë³€ê²½ ì‚¬í•­ì„ ìˆ˜ì • í•˜ëŠ” ê³³
+//ì²´ë ¥ê³¼ ë§ˆë‚˜ë¥¼ ë°”ê¾¸ê¸°ì „ í´ë¨í”„ í•¨ìˆ˜ë¡œ 0~maxì‚¬ì´ê°’ìœ¼ë¡œ ê³ ì •
 void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	Super::PreAttributeChange(Attribute, NewValue);
 
-	//»çÀü ¼Ó¼º º¯°æÀº °ÔÀÓÇÃ·¹ÀÌ È¿°ú¿¡ ´ëÇÑ ¼öÁ¤ÀÚ·ÎºÎÅÍ »õ·Î¿î °ªÀ» ¾ò´Â °ÍÀÔ´Ï´Ù.
+	//ì‚¬ì „ ì†ì„± ë³€ê²½ì€ ê²Œì„í”Œë ˆì´ íš¨ê³¼ì— ëŒ€í•œ ìˆ˜ì •ìë¡œë¶€í„° ìƒˆë¡œìš´ ê°’ì„ ì–»ëŠ” ê²ƒì…ë‹ˆë‹¤.
 
-	//±×·± ´ÙÀ½ ¼Ó¼ºÀÌ º¯°æµÇ±â Àü¿¡ ÀÌ¸¦ °íÁ¤ÇÕ´Ï´Ù.
+	//ê·¸ëŸ° ë‹¤ìŒ ì†ì„±ì´ ë³€ê²½ë˜ê¸° ì „ì— ì´ë¥¼ ê³ ì •í•©ë‹ˆë‹¤.
 
-	//ÇÏÁö¸¸ ¿©±â ÀÖ´Â ÀÌ Å¬·¥ÇÁ´Â ÇØ´ç ¼öÁ¤ÀÚ¸¦ ¿µ±¸ÀûÀ¸·Î º¯°æÇÏÁö ¾Ê½À´Ï´Ù.
+	//í•˜ì§€ë§Œ ì—¬ê¸° ìˆëŠ” ì´ í´ë¨í”„ëŠ” í•´ë‹¹ ìˆ˜ì •ìë¥¼ ì˜êµ¬ì ìœ¼ë¡œ ë³€ê²½í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.
 
-	//ÇØ´ç ¼öÁ¤ÀÚ¸¦ Äõ¸®ÇÏ¿© ¹İÈ¯µÇ´Â °ª¸¸ º¯°æÇÕ´Ï´Ù.
+	//í•´ë‹¹ ìˆ˜ì •ìë¥¼ ì¿¼ë¦¬í•˜ì—¬ ë°˜í™˜ë˜ëŠ” ê°’ë§Œ ë³€ê²½í•©ë‹ˆë‹¤.
 
-	//±×¸®°í ÀÚÃ¼ ¼öÁ¤ÀÚ¸¦ Äõ¸®ÇÒ ´Ù¸¥ °ÔÀÓÇÃ·¹ÀÌ È¿°ú°¡ ÀÖ´Â °æ¿ì
+	//ê·¸ë¦¬ê³  ìì²´ ìˆ˜ì •ìë¥¼ ì¿¼ë¦¬í•  ë‹¤ë¥¸ ê²Œì„í”Œë ˆì´ íš¨ê³¼ê°€ ìˆëŠ” ê²½ìš°
 
-	//	ÇöÀç °ª¿¡¼­ °ªÀ» ´Ù½Ã °è»êÇÕ´Ï´Ù.
+	//	í˜„ì¬ ê°’ì—ì„œ ê°’ì„ ë‹¤ì‹œ ê³„ì‚°í•©ë‹ˆë‹¤.
 
-	//	µû¶ó¼­ °ªÀÌ ½ÇÁ¦·Î °íÁ¤µÇÁö ¾ÊÀº °Í°ú °°½À´Ï´Ù.
+	//	ë”°ë¼ì„œ ê°’ì´ ì‹¤ì œë¡œ ê³ ì •ë˜ì§€ ì•Šì€ ê²ƒê³¼ ê°™ìŠµë‹ˆë‹¤.
 
-	//¼Ó¼ºÀÌ º¯°æµÇ±â Àü¿¡ ÀÌ¸¦ °íÁ¤ÇßÁö¸¸ ÇØ´ç ¼öÁ¤ÀÚ°¡ ´Ù½Ã °è»êµË´Ï´Ù.
+	//ì†ì„±ì´ ë³€ê²½ë˜ê¸° ì „ì— ì´ë¥¼ ê³ ì •í–ˆì§€ë§Œ í•´ë‹¹ ìˆ˜ì •ìê°€ ë‹¤ì‹œ ê³„ì‚°ë©ë‹ˆë‹¤.
 
-	// PostGameplayEffectExecuted¿¡¼­ ½ÇÁ¦ °ªÀ¸·Î ´Ù½Ã Å¬·¥ÇÁ ÇØÁØ´Ù.
+	// PostGameplayEffectExecutedì—ì„œ ì‹¤ì œ ê°’ìœ¼ë¡œ ë‹¤ì‹œ í´ë¨í”„ í•´ì¤€ë‹¤.
 	if (Attribute == GetHealthAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
@@ -84,7 +96,7 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 
 void UAuraAttributeSet::SetEffectProperites(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
 {
-	// Source = È¿°úÀÇ ¿øÀÎ, Target = È¿°úÀÇ ´ë»ó (ÀÌ ¾×ÅÍºä¼Â ¼ÒÀ¯ÁÖ)
+	// Source = íš¨ê³¼ì˜ ì›ì¸, Target = íš¨ê³¼ì˜ ëŒ€ìƒ (ì´ ì•¡í„°ë·°ì…‹ ì†Œìœ ì£¼)
 	Props.EffectContextHandle = Data.EffectSpec.GetContext();
 	Props.SourceASC = Props.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
 	if (IsValid(Props.SourceASC) && Props.SourceASC->AbilityActorInfo.IsValid() && Props.SourceASC->AbilityActorInfo->AvatarActor.IsValid())
@@ -113,16 +125,16 @@ void UAuraAttributeSet::SetEffectProperites(const FGameplayEffectModCallbackData
 	}
 }
 
-//ÀÌÆåÆ® È¿°ú Àû¿ë ÈÄ
+//ì´í™íŠ¸ íš¨ê³¼ ì ìš© í›„
 void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
 
-	
+
 	FEffectProperties Props;
 	SetEffectProperites(Data, Props);
 
-	//¼öÁ¤ÀÚ °ªÀÌ ¾Æ´Ñ ½ÇÁ¦°ªÀ» °¡Á®¿Í °ªÀ» Min~Max»çÀÌ °íÁ¤
+	//ìˆ˜ì •ì ê°’ì´ ì•„ë‹Œ ì‹¤ì œê°’ì„ ê°€ì ¸ì™€ ê°’ì„ Min~Maxì‚¬ì´ ê³ ì •
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
@@ -132,12 +144,12 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	{
 		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
 	}
-	
+
 }
 
 void UAuraAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Health, OldHealth); // ÀÌ ¸ÅÅ©·Î´Â ÇØ´ç Æ¯¼ºÀÇ º¯°æÀ» Å¬¶óÀÌ¾ğÆ®¿¡°Ô ¾Ë¸®´Âµ¥ »ç¿ëµË´Ï´Ù.
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Health, OldHealth); // ì´ ë§¤í¬ë¡œëŠ” í•´ë‹¹ íŠ¹ì„±ì˜ ë³€ê²½ì„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì•Œë¦¬ëŠ”ë° ì‚¬ìš©ë©ë‹ˆë‹¤.
 }
 
 void UAuraAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const
@@ -147,35 +159,35 @@ void UAuraAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHeal
 
 void UAuraAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldMana) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Mana, OldMana); // ÀÌ ¸ÅÅ©·Î´Â ÇØ´ç Æ¯¼ºÀÇ º¯°æÀ» Å¬¶óÀÌ¾ğÆ®¿¡°Ô ¾Ë¸®´Âµ¥ »ç¿ëµË´Ï´Ù.
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Mana, OldMana); // ì´ ë§¤í¬ë¡œëŠ” í•´ë‹¹ íŠ¹ì„±ì˜ ë³€ê²½ì„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì•Œë¦¬ëŠ”ë° ì‚¬ìš©ë©ë‹ˆë‹¤.
 
 }
 
 void UAuraAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, MaxMana, OldMaxMana); // ÀÌ ¸ÅÅ©·Î´Â ÇØ´ç Æ¯¼ºÀÇ º¯°æÀ» Å¬¶óÀÌ¾ğÆ®¿¡°Ô ¾Ë¸®´Âµ¥ »ç¿ëµË´Ï´Ù.
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, MaxMana, OldMaxMana); // ì´ ë§¤í¬ë¡œëŠ” í•´ë‹¹ íŠ¹ì„±ì˜ ë³€ê²½ì„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì•Œë¦¬ëŠ”ë° ì‚¬ìš©ë©ë‹ˆë‹¤.
 
 }
 
 void UAuraAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Strength, OldStrength); // ÀÌ ¸ÅÅ©·Î´Â ÇØ´ç Æ¯¼ºÀÇ º¯°æÀ» Å¬¶óÀÌ¾ğÆ®¿¡°Ô ¾Ë¸®´Âµ¥ »ç¿ëµË´Ï´Ù.
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Strength, OldStrength); // ì´ ë§¤í¬ë¡œëŠ” í•´ë‹¹ íŠ¹ì„±ì˜ ë³€ê²½ì„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì•Œë¦¬ëŠ”ë° ì‚¬ìš©ë©ë‹ˆë‹¤.
 
 }
 
 void UAuraAttributeSet::OnRep_Intelligence(const FGameplayAttributeData& OldIntelligence) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Intelligence, OldIntelligence); // ÀÌ ¸ÅÅ©·Î´Â ÇØ´ç Æ¯¼ºÀÇ º¯°æÀ» Å¬¶óÀÌ¾ğÆ®¿¡°Ô ¾Ë¸®´Âµ¥ »ç¿ëµË´Ï´Ù.
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Intelligence, OldIntelligence); // ì´ ë§¤í¬ë¡œëŠ” í•´ë‹¹ íŠ¹ì„±ì˜ ë³€ê²½ì„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì•Œë¦¬ëŠ”ë° ì‚¬ìš©ë©ë‹ˆë‹¤.
 }
 
 void UAuraAttributeSet::OnRep_Resilience(const FGameplayAttributeData& OldResilience) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Resilience, OldResilience); // ÀÌ ¸ÅÅ©·Î´Â ÇØ´ç Æ¯¼ºÀÇ º¯°æÀ» Å¬¶óÀÌ¾ğÆ®¿¡°Ô ¾Ë¸®´Âµ¥ »ç¿ëµË´Ï´Ù.
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Resilience, OldResilience); // ì´ ë§¤í¬ë¡œëŠ” í•´ë‹¹ íŠ¹ì„±ì˜ ë³€ê²½ì„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì•Œë¦¬ëŠ”ë° ì‚¬ìš©ë©ë‹ˆë‹¤.
 }
 
 void UAuraAttributeSet::OnRep_Vigor(const FGameplayAttributeData& OldVigor) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Vigor, OldVigor); // ÀÌ ¸ÅÅ©·Î´Â ÇØ´ç Æ¯¼ºÀÇ º¯°æÀ» Å¬¶óÀÌ¾ğÆ®¿¡°Ô ¾Ë¸®´Âµ¥ »ç¿ëµË´Ï´Ù.
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Vigor, OldVigor); // ì´ ë§¤í¬ë¡œëŠ” í•´ë‹¹ íŠ¹ì„±ì˜ ë³€ê²½ì„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì•Œë¦¬ëŠ”ë° ì‚¬ìš©ë©ë‹ˆë‹¤.
 }
 
 void UAuraAttributeSet::OnRep_Armor(const FGameplayAttributeData& OldArmor) const

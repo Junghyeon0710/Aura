@@ -7,13 +7,13 @@
 #include "AbilitySystemComponent.h"
 #include "AuraAttributeSet.generated.h"
 
- #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
+#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
-// FGameplayAttribute¸¦ ¹İÇÑÇØÁÜ ÇÔ¼ö¶û ºñ½ÁÇÔ
+// FGameplayAttributeë¥¼ ë°˜í•œí•´ì¤Œ í•¨ìˆ˜ë‘ ë¹„ìŠ·í•¨
 DECLARE_DELEGATE_RetVal(FGameplayAttribute, FAttributeSignature);
 
 USTRUCT()
@@ -21,7 +21,7 @@ struct FEffectProperties
 {
 	GENERATED_BODY()
 
-	FEffectProperties(){}
+	FEffectProperties() {}
 
 	FGameplayEffectContextHandle EffectContextHandle;
 
@@ -50,14 +50,14 @@ struct FEffectProperties
 	ACharacter* TargetCharacter = nullptr;
 };
 
-//typedef´Â FGameplayAttribute()¿Í °ü·ÃµÈ ÇÔ¼ö Æ÷ÀÎÅÍ¸¸À» ´Ù·ê ¼ö ÀÖ½À´Ï´Ù.
-//TStaticFunPtrÀº Æ¯Á¤ ½Ã±×´ÏÃ³¿¡ Á¦ÇÑ¹ŞÁö ¾Ê°í ´Ù¾çÇÑ Á¾·ùÀÇ ÇÔ¼ö Æ÷ÀÎÅÍ¸¦ ´Ù·ê ¼ö ÀÖ½À´Ï´Ù.
+//typedefëŠ” FGameplayAttribute()ì™€ ê´€ë ¨ëœ í•¨ìˆ˜ í¬ì¸í„°ë§Œì„ ë‹¤ë£° ìˆ˜ ìˆìŠµë‹ˆë‹¤.
+//TStaticFunPtrì€ íŠ¹ì • ì‹œê·¸ë‹ˆì²˜ì— ì œí•œë°›ì§€ ì•Šê³  ë‹¤ì–‘í•œ ì¢…ë¥˜ì˜ í•¨ìˆ˜ í¬ì¸í„°ë¥¼ ë‹¤ë£° ìˆ˜ ìˆìŠµë‹ˆë‹¤.
 
 //typedef TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr FAttributeFuncPtr;
 template<class T>
 using TStaticFuncPtr = typename TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr;
 /**
- * 
+ *
  */
 UCLASS()
 class AURA_API UAuraAttributeSet : public UAttributeSet
@@ -69,90 +69,90 @@ public:
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)override;
 
-	//³ª´Â °ÔÀÓÇÃ·¹ÀÌ ¼Ó¼ºÀ» ¿øÇÕ´Ï´Ù. ¿Ö³ÄÇÏ¸é ¼Ó¼ºÀÌ º¯°æµÉ ¶§ ºê·ÎµåÄ³½ºÆ®µÇ´Â ´ë¸®ÀÚ°¡ ÀÖ°í, 
-	//±× ºê·ÎµåÄ³½ºÆ®´Â °ÔÀÓÇÃ·¹ÀÌ ¼Ó¼ºÀ» »ç¿ëÇÕ´Ï´Ù. ±×¸®°í ³ª´Â ÅÂ±×¸¦ ÀÌ·¯ÇÑ ¼Ó¼º¿¡ ¸ÅÇÎÇÏ´Â ¸ÊÀ» ¿øÇÕ´Ï´Ù.
-	
-	/*´ë¸®ÀÚ´Â Æ¯Á¤ ÀÌº¥Æ®³ª ÇÔ¼ö¸¦ ÂüÁ¶ÇÏ´Â °´Ã¼·Î, ÀÌº¥Æ® ¹ß»ı ½Ã
-	 *ÇØ´ç ÇÔ¼ö¸¦ È£ÃâÇÏ°Ô µË´Ï´Ù. Á¤Àû ´ë¸®ÀÚ´Â Å¬·¡½º³ª °´Ã¼ ÀÎ½ºÅÏ½º¿¡ Á¾¼ÓµÇÁö ¾Ê°í,
-	 *	Å¬·¡½º ÀÚÃ¼¿¡ ¼ÓÇÑ ÇÔ¼ö¿¡ ´ëÇÑ ´ë¸®ÀÚ¸¦ ¸¸µé ¼ö ÀÖ½À´Ï´Ù
-	 * TBaseStaticDelegateInstance<¸®ÅÏÅ¸ÀÔ(),FDefaultDelegateUserPolicy::FFuncPtr
-	 * FunctionPointer = GetIntellgenceAttribute ½Ã±×´ÏÃ³ º¯¼ö°ªÀ» °¡Áü
-	 * FGameplayAttribute Attribute = FunctionPointer(); °ıÈ£ ºÙÀÌ¸é Ã¹¹ø¤Š ÆÄ¶óÆ¼¸Ó°¡ ¹İÈ¯
+	//ë‚˜ëŠ” ê²Œì„í”Œë ˆì´ ì†ì„±ì„ ì›í•©ë‹ˆë‹¤. ì™œëƒí•˜ë©´ ì†ì„±ì´ ë³€ê²½ë  ë•Œ ë¸Œë¡œë“œìºìŠ¤íŠ¸ë˜ëŠ” ëŒ€ë¦¬ìê°€ ìˆê³ , 
+	//ê·¸ ë¸Œë¡œë“œìºìŠ¤íŠ¸ëŠ” ê²Œì„í”Œë ˆì´ ì†ì„±ì„ ì‚¬ìš©í•©ë‹ˆë‹¤. ê·¸ë¦¬ê³  ë‚˜ëŠ” íƒœê·¸ë¥¼ ì´ëŸ¬í•œ ì†ì„±ì— ë§¤í•‘í•˜ëŠ” ë§µì„ ì›í•©ë‹ˆë‹¤.
+
+	/*ëŒ€ë¦¬ìëŠ” íŠ¹ì • ì´ë²¤íŠ¸ë‚˜ í•¨ìˆ˜ë¥¼ ì°¸ì¡°í•˜ëŠ” ê°ì²´ë¡œ, ì´ë²¤íŠ¸ ë°œìƒ ì‹œ
+	 *í•´ë‹¹ í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•˜ê²Œ ë©ë‹ˆë‹¤. ì •ì  ëŒ€ë¦¬ìëŠ” í´ë˜ìŠ¤ë‚˜ ê°ì²´ ì¸ìŠ¤í„´ìŠ¤ì— ì¢…ì†ë˜ì§€ ì•Šê³ ,
+	 *	í´ë˜ìŠ¤ ìì²´ì— ì†í•œ í•¨ìˆ˜ì— ëŒ€í•œ ëŒ€ë¦¬ìë¥¼ ë§Œë“¤ ìˆ˜ ìˆìŠµë‹ˆë‹¤
+	 * TBaseStaticDelegateInstance<ë¦¬í„´íƒ€ì…(),FDefaultDelegateUserPolicy::FFuncPtr
+	 * FunctionPointer = GetIntellgenceAttribute ì‹œê·¸ë‹ˆì²˜ ë³€ìˆ˜ê°’ì„ ê°€ì§
+	 * FGameplayAttribute Attribute = FunctionPointer(); ê´„í˜¸ ë¶™ì´ë©´ ì²«ë²ˆÂŠ íŒŒë¼í‹°ë¨¸ê°€ ë°˜í™˜
 	 * TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr
-	 * À» ÁÙ¿©¼­ ¹İÈ¯ÇÒÇÔ¼ö(*)()·Î ÇÒ ¼ö ÀÖ´Ù.
-	 * FGameplayAttribute(*)()Àº ÇÔ¼ö Æ÷ÀÎÅÍ¸¦ »ç¿ëÇÏ¿© °ÔÀÓ ¼Ó¼ºÀ» ¹İÈ¯ÇÏ´Â ÇÔ¼ö¸¦ °¡¸®Å°´Â µ¥ÀÌÅÍ Çü½ÄÀÔ´Ï´Ù.
-	 *ÀÌ°ÍÀº ÇØ´ç ÅÂ±×¿¡ ¸ÅÇÎµÈ °ÔÀÓ ¼Ó¼ºÀ» µ¿ÀûÀ¸·Î °Ë»öÇÏ´Â µ¥ »ç¿ëµË´Ï´Ù.
+	 * ì„ ì¤„ì—¬ì„œ ë°˜í™˜í• í•¨ìˆ˜(*)()ë¡œ í•  ìˆ˜ ìˆë‹¤.
+	 * FGameplayAttribute(*)()ì€ í•¨ìˆ˜ í¬ì¸í„°ë¥¼ ì‚¬ìš©í•˜ì—¬ ê²Œì„ ì†ì„±ì„ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜ë¥¼ ê°€ë¦¬í‚¤ëŠ” ë°ì´í„° í˜•ì‹ì…ë‹ˆë‹¤.
+	 *ì´ê²ƒì€ í•´ë‹¹ íƒœê·¸ì— ë§¤í•‘ëœ ê²Œì„ ì†ì„±ì„ ë™ì ìœ¼ë¡œ ê²€ìƒ‰í•˜ëŠ” ë° ì‚¬ìš©ë©ë‹ˆë‹¤.
 	 *
-	 * °ªÀ» ³ÖÀ¸¸é µ¿ÀûÀ¸·Î Ã£¾Æ³¿
+	 * ê°’ì„ ë„£ìœ¼ë©´ ë™ì ìœ¼ë¡œ ì°¾ì•„ëƒ„
 	 */
 	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;
 
 
 
 	/*
-	* ½ºÅİ ¼Ó¼º
+	* ìŠ¤í…Ÿ ì†ì„±
 	*/
-	
+
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
-	FGameplayAttributeData Strength; //¹°¸®µ¥¹ÌÁö
+	FGameplayAttributeData Strength; //ë¬¼ë¦¬ë°ë¯¸ì§€
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Strength);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
-	FGameplayAttributeData Intelligence; //¸¶¹ıµ¥¹ÌÁö
+	FGameplayAttributeData Intelligence; //ë§ˆë²•ë°ë¯¸ì§€
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Intelligence);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
-	FGameplayAttributeData Resilience; //¹æ¾î±¸ °üÅë·Â,¹æ¾î·Â
+	FGameplayAttributeData Resilience; //ë°©ì–´êµ¬ ê´€í†µë ¥,ë°©ì–´ë ¥
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resilience);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
-	FGameplayAttributeData Vigor; //È¸º¹Áõ°¡·®
+	FGameplayAttributeData Vigor; //íšŒë³µì¦ê°€ëŸ‰
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Vigor);
-	
+
 	/*
-	* º¸Á¶ ¼Ó¼º
+	* ë³´ì¡° ì†ì„±
 	*/
 
-	/** ¹æ¾î·Â(Res) */
+	/** ë°©ì–´ë ¥(Res) */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Armor, Category = "Secondary Attributes")
-	FGameplayAttributeData Armor; 
+	FGameplayAttributeData Armor;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Armor);
 
-	/** ¹æ¾î±¸ °üÅë·Â(Res) */
+	/** ë°©ì–´êµ¬ ê´€í†µë ¥(Res) */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ArmorPenetration, Category = "Secondary Attributes")
-	FGameplayAttributeData ArmorPenetration; 
+	FGameplayAttributeData ArmorPenetration;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ArmorPenetration);
 
-	/** ÇÇÇØ·® Àı¹İÀ¸·Î °¨¼Ò Âù½º(Armor) */
+	/** í”¼í•´ëŸ‰ ì ˆë°˜ìœ¼ë¡œ ê°ì†Œ ì°¬ìŠ¤(Armor) */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_BlockChance, Category = "Secondary Attributes")
 	FGameplayAttributeData BlockChance;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, BlockChance);
 
-	/** ¹æ¾î±¸ °üÅë·Â ³ôÀ»½Ã Ä¡¸íÅ¸ È®·ü ¿Ã¶ó°¨(Armor Penetration) */
+	/** ë°©ì–´êµ¬ ê´€í†µë ¥ ë†’ì„ì‹œ ì¹˜ëª…íƒ€ í™•ë¥  ì˜¬ë¼ê°(Armor Penetration) */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitChance, Category = "Secondary Attributes")
 	FGameplayAttributeData CriticalHitChance;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitChance);
 
-	/** Ä¡¸íÅ¸ µ¥¹ÌÁö(Armor Penetration) */
+	/** ì¹˜ëª…íƒ€ ë°ë¯¸ì§€(Armor Penetration) */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitDamage, Category = "Secondary Attributes")
 	FGameplayAttributeData CriticalHitDamage;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitDamage);
 
-	/** Ä¡¸íÅ¸ ÀúÇ×(Armor) */
+	/** ì¹˜ëª…íƒ€ ì €í•­(Armor) */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitResistance, Category = "Secondary Attributes")
 	FGameplayAttributeData CriticalHitResistance;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitResistance);
 
-	/** Ã¼·Â È¸º¹(Vig) */
+	/** ì²´ë ¥ íšŒë³µ(Vig) */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthRegeneration, Category = "Secondary Attributes")
 	FGameplayAttributeData HealthRegeneration;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, HealthRegeneration);
 
-	/** ¸¶³ª Àç»ı(Int) */
+	/** ë§ˆë‚˜ ì¬ìƒ(Int) */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ManaRegeneration, Category = "Secondary Attributes")
 	FGameplayAttributeData ManaRegeneration;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegeneration);
-	
+
 
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Vital Attributes")
@@ -163,7 +163,7 @@ public:
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
 	/*
-	* Áß¿ä ¼Ó¼º
+	* ì¤‘ìš” ì†ì„±
 	*/
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes")
@@ -176,14 +176,14 @@ public:
 
 
 
-	//Áß¿ä
+	//ì¤‘ìš”
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
 
 	UFUNCTION()
 	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;
 
-	//½ºÅİ
+	//ìŠ¤í…Ÿ
 	UFUNCTION()
 	void OnRep_Strength(const FGameplayAttributeData& OldStrength) const;
 
@@ -196,8 +196,8 @@ public:
 	UFUNCTION()
 	void OnRep_Vigor(const FGameplayAttributeData& OldVigor) const;
 
-	
-	//º¸Á¶
+
+	//ë³´ì¡°
 	UFUNCTION()
 	void OnRep_Armor(const FGameplayAttributeData& OldArmor) const;
 
@@ -230,6 +230,5 @@ public:
 
 private:
 
-	void SetEffectProperites(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props)const ;
+	void SetEffectProperites(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props)const;
 };
-

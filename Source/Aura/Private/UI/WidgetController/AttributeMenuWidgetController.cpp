@@ -7,26 +7,40 @@
 #include "AuraGameplayTags.h"
 void UAttributeMenuWidgetController::BrodcastInitialValues()
 {
-	//¿À¶ó¼® ¼Ó¼ºÀ» °¡Á®¿È
+	//ì˜¤ë¼ì„ ì†ì„±ì„ ê°€ì ¸ì˜´
 	UAuraAttributeSet* AS = CastChecked<UAuraAttributeSet>(AttributeSet);
 
 	check(AttributeInfo);
 
 	for (auto& Pair : AS->TagsToAttributes)
 	{
-		// FAuraAttributeInfo¿¡¼­ ³×ÀÌÆ¼ºê ÅÂ±×¿Í µ¿ÀÏÇÑ ÅÂ±×¸¦ Ã£½À´Ï´Ù.
+		// FAuraAttributeInfoì—ì„œ ë„¤ì´í‹°ë¸Œ íƒœê·¸ì™€ ë™ì¼í•œ íƒœê·¸ë¥¼ ì°¾ìŠµë‹ˆë‹¤.
 		FAuraAttributeInfo Info = AttributeInfo->FindAttributeInfoForTag(Pair.Key);
 
-		// ÅÂ±×¿¡ ´ëÇÑ FAuraAttributeInfo¸¦ Ã£¾ÒÀ¸¸é,
-		// ÇØ´ç ÅÂ±×ÀÇ °ªÀ» AS (Ability System Component)À» »ç¿ëÇÏ¿© TMap¿¡¼­ ¼ıÀÚ °ªÀ¸·Î °¡Á®¿Í¼­ FAuraAttributeInfo¿¡ ÇÒ´çÇÕ´Ï´Ù.
+		// íƒœê·¸ì— ëŒ€í•œ FAuraAttributeInfoë¥¼ ì°¾ì•˜ìœ¼ë©´,
+		// í•´ë‹¹ íƒœê·¸ì˜ ê°’ì„ AS (Ability System Component)ì„ ì‚¬ìš©í•˜ì—¬ TMapì—ì„œ ìˆ«ì ê°’ìœ¼ë¡œ ê°€ì ¸ì™€ì„œ FAuraAttributeInfoì— í• ë‹¹í•©ë‹ˆë‹¤.
 		Info.AttributeValue = Pair.Value().GetNumericValue(AS);
 
-		// FAuraAttributeInfo Á¤º¸¸¦ °ÔÀÓ ³»¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖµµ·Ï ºê·ÎµåÄ³½ºÆÃÇÕ´Ï´Ù.
+		// FAuraAttributeInfo ì •ë³´ë¥¼ ê²Œì„ ë‚´ì—ì„œ ì‚¬ìš©í•  ìˆ˜ ìˆë„ë¡ ë¸Œë¡œë“œìºìŠ¤íŒ…í•©ë‹ˆë‹¤.
 		AttributeInfoDelegate.Broadcast(Info);
 	}
 }
 
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 {
-	
+	UAuraAttributeSet* AS = CastChecked<UAuraAttributeSet>(AttributeSet);
+
+	for (auto& Pair : AS->TagsToAttributes)
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Pair.Value()).AddLambda(
+			[this,Pair,AS](const FOnAttributeChangeData& Data)
+			{
+				FAuraAttributeInfo Info = AttributeInfo->FindAttributeInfoForTag(Pair.Key);
+				Info.AttributeValue = Pair.Value().GetNumericValue(AS);
+				AttributeInfoDelegate.Broadcast(Info);
+			}
+		);
+
+	}
+
 }

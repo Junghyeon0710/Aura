@@ -31,4 +31,7 @@ protected:
 	//정보데이터 자산을 블루프린트에서 설정해준다.
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAttributeInfo> AttributeInfo;
+
+private:
+	void BroadcastAttributeInfo(const FGameplayTag& AttributeTag, const FGameplayAttribute& Attribute) const;
 };
