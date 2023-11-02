@@ -3,6 +3,7 @@
 
 #include "Character/AutraCharacterBase.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 
 AAutraCharacterBase::AAutraCharacterBase()
 {
@@ -45,6 +46,17 @@ void AAutraCharacterBase::InitializeDefaultAttributes() const
 	ApplyEffectToSelf(DefaultSecondaryAttributes, 1.f);
 	//MaxHealth과 MaxMana를 따라가기때문에 먼저 해줘야 가능
 	ApplyEffectToSelf(DefaultVitalAttributes, 1.f);
+}
+
+void AAutraCharacterBase::AddCharacterAbilities()
+{
+	
+	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+	if (!HasAuthority()) return; //서버가 아니면 
+
+	AuraASC->AddCharacterAbilities(StartupAbilites);
+	AuraASC->GiveAbility()
+
 }
 
 

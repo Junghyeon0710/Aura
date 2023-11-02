@@ -16,6 +16,19 @@ void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 	//GameplayTags.Attributes_secondary_Armor.ToString()
 }
 
+//CharacterBase에서 호출
+void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities)
+{
+	for (TSubclassOf<UGameplayAbility> AbilityClass : StartupAbilities)
+	{
+		// FGameplayAbilitySpec 구조체로 초기화
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+		//GiveAbility(AbilitySpec); //능력부여
+		GiveAbilityAndActivateOnce(AbilitySpec); //능력 한번만 부여
+
+	}
+}
+
 void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
 	FGameplayTagContainer TagContainer;

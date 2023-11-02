@@ -11,6 +11,7 @@
 class UAbilitySystemComponent;
 class UAttributeSet;
 class UGameplayEffect;
+class UGameplayAbility;
 
 UCLASS(Abstract) // 클래스 레벨 소환 방지
 class AURA_API AAutraCharacterBase : public ACharacter,public IAbilitySystemInterface,public ICombatInterface
@@ -45,4 +46,9 @@ protected:
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level)const;
 	void InitializeDefaultAttributes()const;
 
+	void AddCharacterAbilities();
+
+private:
+	UPROPERTY(EditAnywhere, Category = Abilities)
+	TArray <TSubclassOf<UGameplayAbility>> StartupAbilites;
 };

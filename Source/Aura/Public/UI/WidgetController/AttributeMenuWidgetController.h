@@ -8,6 +8,8 @@
 
 struct FAuraAttributeInfo;
 class UAttributeInfo;
+struct FGameplayAttribute;
+struct FGameplayTag;
 
 /** 오라 속성 정보를 넘겨주는 델리게이트*/
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeInfoSignature, const FAuraAttributeInfo&, Info);
