@@ -9,6 +9,7 @@
 class UAuraUserWidget;
 class UOverlayWidgetController;
 struct FWidgetControllerParms;
+class UAttributeMenuWidgetController;
 /**
  * 
  */
@@ -18,15 +19,16 @@ class AURA_API AAuraHUD : public AHUD
 	GENERATED_BODY()
 public:
 
-	UPROPERTY()
-	TObjectPtr<UAuraUserWidget> OverlayWidget;
 
 	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParms& WCParms);
-
+	UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const FWidgetControllerParms& WCParams);
 	//캐릭터에서 호출 
 	void InitOverlay(class APlayerController* PC, class APlayerState* PS,class  UAbilitySystemComponent* ASC, class UAttributeSet* AS);
 
 private:
+
+	UPROPERTY()
+	TObjectPtr<UAuraUserWidget> OverlayWidget;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UAuraUserWidget> OverlayWidgetClass;
@@ -36,4 +38,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
+
+	UPROPERTY()
+	TObjectPtr<UAttributeMenuWidgetController> AttributeMenuWidgetController;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UAttributeMenuWidgetController> AttributeMenuWidgetControllerClass;
 };
