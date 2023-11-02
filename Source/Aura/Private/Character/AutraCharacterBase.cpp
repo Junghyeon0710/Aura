@@ -55,7 +55,6 @@ void AAutraCharacterBase::AddCharacterAbilities()
 	if (!HasAuthority()) return; //서버가 아니면 
 
 	AuraASC->AddCharacterAbilities(StartupAbilites);
-	AuraASC->GiveAbility()
 
 }
 
