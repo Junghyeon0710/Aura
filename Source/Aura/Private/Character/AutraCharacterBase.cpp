@@ -19,6 +19,11 @@ UAbilitySystemComponent* AAutraCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+FVector AAutraCharacterBase::GetCombatSocketLocation()
+{
+	return Weapon->GetSocketLocation(WeaponTipSocketName);
+}
+
 void AAutraCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
