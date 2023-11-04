@@ -30,6 +30,7 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 
 void AAuraPlayerController::AutoRun()
 {
+	//클라이언트도 실행하라면 에디터에서 프로젝트 세팅 Nvation System-> Allow Clinet Side Navigation 체크해줘야함
 	if (!bAutoRunning) return;
 	if (APawn* ControlledPawn = GetPawn())
 	{
@@ -53,7 +54,7 @@ void AAuraPlayerController::AutoRun()
 
 void AAuraPlayerController::CursorTrace()
 {
-	FHitResult CursorHit;
+	
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 
@@ -73,38 +74,10 @@ void AAuraPlayerController::CursorTrace()
 	*  - Return
 	*/
 
-	if (LastActor == nullptr)
+	if (LastActor != ThisActor)  //서로 다르면
 	{
-		if (ThisActor != nullptr)
-		{
-			//Case B
-			ThisActor->HighlightActor();
-		}
-		else
-		{
-			//Case A = 둘다 널 , 아무것도 하지잖음
-		}
-	}
-	else // LastActor is valid
-	{
-		if (ThisActor == nullptr)
-		{
-			//case C
-			LastActor->UnHighlightActor();
-		}
-		else // 둘다 값이 있음
-		{
-			if (LastActor != ThisActor)
-			{
-				//Case D
-				LastActor->UnHighlightActor();
-				ThisActor->HighlightActor();
-			}
-			else
-			{
-				//Case E , 아무것도 하지 않음
-			}
-		}
+		if (LastActor) LastActor->UnHighlightActor(); 
+		if (ThisActor) ThisActor->HighlightActor();
 	}
 
 }
@@ -145,7 +118,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 	}
 	else // 위치를 갖다되면
 	{
-		APawn* ControllerPawn = GetPawn();
+		const APawn* ControllerPawn = GetPawn();
 		//짧게 눌렀으면 그 지역으로 가야됨
 		if (FollowTime <= ShortPressThreshold && ControllerPawn)
 		{
@@ -165,6 +138,8 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 					Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
 				
 				}
+				//캐릭터 클릭 위치를 마지막 지점으로 해줌
+				CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
 				// 자동으로 그위치로 감
 				bAutoRunning = true;
 			}
@@ -201,10 +176,9 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 	{
 		FollowTime += GetWorld()->GetDeltaSeconds();
 
-		FHitResult Hit;
-		if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
+		if (CursorHit.bBlockingHit)
 		{
-			CachedDestination = Hit.ImpactPoint;
+			CachedDestination = CursorHit.ImpactPoint;
 		}
 
 		if (APawn* ControllerPawn = GetPawn())

@@ -40,6 +40,7 @@ private:
 	void CursorTrace();
 	IEnemyInterface* LastActor;
 	IEnemyInterface*  ThisActor;
+	FHitResult CursorHit;
 
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 	void AbilityInputTagReleased(FGameplayTag InputTag);
@@ -52,7 +53,7 @@ private:
 
 	UAuraAbilitySystemComponent* GetASC();
 
-	/** 캐릭터 저장 위치*/
+	/** 캐릭터 클릭 위치*/
 	FVector CachedDestination = FVector::ZeroVector;
 	/** 얼마나 눌렀는지*/
 	float FollowTime =0.f;

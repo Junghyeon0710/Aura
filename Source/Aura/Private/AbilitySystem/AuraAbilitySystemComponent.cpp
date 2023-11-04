@@ -11,7 +11,7 @@
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
 	// 자신(Self)에게 어빌리티 효과가 적용될 때 호출되는 델리게이트입니다.
-	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::EffectApplied);
+	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::ClientEffectApplied);
 
 	const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
 	//GameplayTags.Attributes_secondary_Armor.ToString()
@@ -78,7 +78,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& In
 
 }
 
-void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
+void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
 	FGameplayTagContainer TagContainer;
 	EffectSpec.GetAllAssetTags(TagContainer); //갖고 있는 테그를 전부 가져옴
