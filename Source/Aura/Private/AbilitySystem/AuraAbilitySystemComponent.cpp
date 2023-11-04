@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 
 //일반적으로 이 작업은 게임이 실제로 시작할 때 수행하며 생성자에서 수행하지 않습니다. 생성자는 상당히 일찍 호출됩니다.
 //따라서 이 대리자에 일찍 바인딩할 수 있는 위치가 있다면 좋을 것입니다.예를 들어 게임 능력 액터 정보를 초기화한 후에 
@@ -19,14 +20,59 @@ void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 //CharacterBase에서 호출
 void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities)
 {
-	for (TSubclassOf<UGameplayAbility> AbilityClass : StartupAbilities)
+	for (const TSubclassOf<UGameplayAbility> AbilityClass : StartupAbilities)
 	{
 		// FGameplayAbilitySpec 구조체로 초기화
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
-		//GiveAbility(AbilitySpec); //능력부여
-		GiveAbilityAndActivateOnce(AbilitySpec); //능력 한번만 부여
+
+		// 어빌리티가 UAuraGameplayAbility의 하위 클래스인 경우
+		if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
+		{
+			AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupInputTag);
+			GiveAbility(AbilitySpec); //능력부여
+		}
+		//GiveAbilityAndActivateOnce(AbilitySpec); //능력 한번만 부여
 
 	}
+}
+
+void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputTag)
+{
+	if (!InputTag.IsValid()) return;
+
+	//활성화된 어빌리티를 다 가져옴
+	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		//동적으로 할당된 능력 태그에 InputTag가 정확히 일치하는지 확인합니다.
+		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+		{
+			// 능력이 활성화되었을 때 호출되는 함수로 해당 능력에 대한 입력이 눌린 경우 실행됩니다. 
+			AbilitySpecInputPressed(AbilitySpec);
+			//능력이 활성화가 안되있으면
+			if (!AbilitySpec.IsActive())
+			{
+				//지정된 능력을 활성화하려고 시도하는 함
+				TryActivateAbility(AbilitySpec.Handle);
+			}
+		}
+	}
+}
+
+void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)
+{
+	if (!InputTag.IsValid()) return;
+
+	//활성화된 어빌리티를 다 가져옴
+	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		//동적으로 할당된 능력 태그에 InputTag가 정확히 일치하는지 확인합니다.
+		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+		{
+			//놓았을 때 호출되는 함수입니다.
+			AbilitySpecInputReleased(AbilitySpec);
+		}
+	}
+
 }
 
 void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
