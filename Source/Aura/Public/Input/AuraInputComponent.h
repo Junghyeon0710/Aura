@@ -44,9 +44,7 @@ inline void UAuraInputComponent::BindAbilityAction(const UAuraInputConfig* Input
 			if (HeldFunc)
 			{
 				BindAction(Action.InputAction, ETriggerEvent::Triggered, Object, HeldFunc, Action.InputTag);
-			}
-
-			
+			}	
 		}
 	}
 }
