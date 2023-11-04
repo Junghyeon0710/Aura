@@ -14,6 +14,7 @@ struct FInputActionValue;
 class IEnemyInterface;
 class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
+class USplineComponent;
 /**
  * 
  */
@@ -43,7 +44,6 @@ private:
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 	void AbilityInputTagReleased(FGameplayTag InputTag);
 	void AbilityInputTagHeld(FGameplayTag InputTag);
-
 	UPROPERTY(EditDefaultsOnly,Category = "Input")
 	TObjectPtr<UAuraInputConfig> InputConfig;
 
@@ -51,4 +51,22 @@ private:
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 
 	UAuraAbilitySystemComponent* GetASC();
+
+	/** 캐릭터 저장 위치*/
+	FVector CachedDestination = FVector::ZeroVector;
+	/** 얼마나 눌렀는지*/
+	float FollowTime =0.f;
+	/** 얼마나 짧게 눌렀는지 기준점*/
+	float ShortPressThreshold = 0.5f;
+	/** 언제 자동으로 움직여야하는지*/
+	bool bAutoRunning = false;
+	/** 타겟의 마우스를 갖다됬는지*/
+	bool bTargeting = false;
+	/** 도착지에 얼마나 가까이 왔는지*/
+	UPROPERTY(EditDefaultsOnly)
+	float AutoRunAcceptanceRadius = 50.f;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USplineComponent> Spline;
+
+	void AutoRun();
 };
