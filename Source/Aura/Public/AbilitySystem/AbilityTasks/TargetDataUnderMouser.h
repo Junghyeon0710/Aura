@@ -6,7 +6,7 @@
 #include "Abilities/Tasks/AbilityTask.h"
 #include "TargetDataUnderMouser.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMouseTargetDataSignature, const FVector&, Data);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMouseTargetDataSignature, const FGameplayAbilityTargetDataHandle&, Handle);
 
 /**
  * 
@@ -25,6 +25,9 @@ public:
 
 private:
 	virtual void Activate() override;
+	void SendMouseCursorData();
+
+	void OnTargetDataReplicatedCallback(const FGameplayAbilityTargetDataHandle& DataHandle, FGameplayTag ActivationTag);
 };
 //HidePin = "OwningAbility": 블루프린트에서 해당 매개변수를 감춥니다.
 //DefaultToSelf = "OwningAbility": OwningAbility라는 객체를 함수의 기본 값으로 사용합니다.일반적으로 이 매개변수는 함수를 호출한 객체(블루프린트에서는 Self 또는 Target이라고도 함)를 지정하는 데 사용됩니다.
