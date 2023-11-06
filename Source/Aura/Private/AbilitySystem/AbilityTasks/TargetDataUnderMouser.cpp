@@ -17,9 +17,11 @@ void UTargetDataUnderMouser::Activate()
 	if (bIsLocallyControlled)
 	{
 		SendMouseCursorData();
+		GEngine->AddOnScreenDebugMessage(-11, 3.f, FColor::Red, FString("local"));
 	}
-	else //서버에 도달
+	else //서버에서 실행 중이므로 대상 데이터를 수신 대기합니다
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, FString("Server"));
 		//어빌리티의 스펙 핸들을 얻어옵니다
 		const FGameplayAbilitySpecHandle SpecHandle = GetAbilitySpecHandle();
 		//어빌리티의 활성화 예측 키를 얻어옵니다.
@@ -36,12 +38,16 @@ void UTargetDataUnderMouser::Activate()
 			SetWaitingOnRemotePlayerData();
 		}
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Orange, FString("Server&local"));
 
 }
 
 //마우스 커서 위치에서 어떤 대상을 선택하고 해당 정보를 다른 클라이언트와 서버로 공유하는 데 사용
 void UTargetDataUnderMouser::SendMouseCursorData()
 {
+	//클라이언트로부터 새로운 예측 키가 수신되면 서버에서 호출
+	//새로운 예측 키를 생성하고 클라이언트와 서버 간의 동기화 지점 역할
+	//게임의 다중 플레이어 환경에서 무결성 및 동기화를 보장하는 데 중요한 역할
 	FScopedPredictionWindow ScopedPrediction(AbilitySystemComponent.Get());
 
 	APlayerController* PC = Ability->GetCurrentActorInfo()->PlayerController.Get();
@@ -88,3 +94,6 @@ void UTargetDataUnderMouser::OnTargetDataReplicatedCallback(const FGameplayAbili
 		ValidData.Broadcast(DataHandle);
 	}
 }
+//클라이언트에서 Activate하면 서버에서도 Activate하는데 만약 값을 보낼러면 RPC를 해야한다.
+//근데 여기서 문제가 발생한다 복제된 값이 Activate보다 늦게 서버로 도착하면
+//Activate할 때 값을 전달을 못하게 된다.
