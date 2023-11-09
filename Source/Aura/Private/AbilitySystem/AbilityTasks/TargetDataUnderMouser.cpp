@@ -17,11 +17,9 @@ void UTargetDataUnderMouser::Activate()
 	if (bIsLocallyControlled)
 	{
 		SendMouseCursorData();
-		GEngine->AddOnScreenDebugMessage(-11, 3.f, FColor::Red, FString("local"));
 	}
 	else //서버에서 실행 중이므로 대상 데이터를 수신 대기합니다
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, FString("Server"));
 		//어빌리티의 스펙 핸들을 얻어옵니다
 		const FGameplayAbilitySpecHandle SpecHandle = GetAbilitySpecHandle();
 		//어빌리티의 활성화 예측 키를 얻어옵니다.
@@ -38,7 +36,6 @@ void UTargetDataUnderMouser::Activate()
 			SetWaitingOnRemotePlayerData();
 		}
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Orange, FString("Server&local"));
 
 }
 
