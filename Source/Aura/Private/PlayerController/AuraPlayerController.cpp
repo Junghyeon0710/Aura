@@ -107,17 +107,14 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		return;
 	}
 
-	//타겟에 갖다되면
-	if (bTargeting)
+	//능력 비활성화
+	if (GetASC()) GetASC()->AbilityInputTagReleased(InputTag);
+
+
+	//타겟에 마우스포인트가 없고 쉬프트키를 안눌렀으면
+	if (!bTargeting || !bShiftKeyDown)
 	{
 		//능력 비활성화
-		if (GetASC())
-		{
-			GetASC()->AbilityInputTagReleased(InputTag);
-		}
-	}
-	else // 위치를 갖다되면
-	{
 		const APawn* ControllerPawn = GetPawn();
 		//짧게 눌렀으면 그 지역으로 가야됨
 		if (FollowTime <= ShortPressThreshold && ControllerPawn)
@@ -125,7 +122,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 			/**
 			* 내비게이션 시스템에서 특정 위치로 경로를 동기적으로 찾는 함수입니다.
 			*이 함수는 주어진 시작 위치에서 목적지 위치까지의 경로를 계산하고 그 결과를 즉시 반환합니다.
-			*동기적이라는 것은 함수가 경로를 계산할 때까지 대기한다는 것을 의미합니다. 
+			*동기적이라는 것은 함수가 경로를 계산할 때까지 대기한다는 것을 의미합니다.
 			*따라서 이 함수가 완료될 때까지 프로그램이 다음 코드로 진행하지 않습니다.
 			*/
 			if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControllerPawn->GetActorLocation(), CachedDestination))
@@ -136,7 +133,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 				{
 					//스필라인 포인트를 추가시켜줌
 					Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
-				
+
 				}
 				//캐릭터 클릭 위치를 마지막 지점으로 해줌
 				CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
@@ -163,8 +160,8 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 		return;
 	}
 
-	//타겟에 갖다되면
-	if (bTargeting)
+	//타겟에 갖다되거나 쉬프티 키를 누르면
+	if (bTargeting || bShiftKeyDown)
 	{
 		//능력 실행
 		if (GetASC())
@@ -228,8 +225,12 @@ void AAuraPlayerController::SetupInputComponent()
 	UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
 	
 	AuraInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+	AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AAuraPlayerController::ShiftPressed);
+	AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AAuraPlayerController::ShiftRelease);
 
 	AuraInputComponent->BindAbilityAction(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
+
+	
 }
 
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
