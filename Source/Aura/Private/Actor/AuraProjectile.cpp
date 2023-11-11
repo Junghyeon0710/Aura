@@ -61,6 +61,7 @@ void AAuraProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 	{
 		if (UAbilitySystemComponent* TargetASC =  UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 		{
+			/** 데미지 어빌리티 생성*/
 			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
 		}
 
