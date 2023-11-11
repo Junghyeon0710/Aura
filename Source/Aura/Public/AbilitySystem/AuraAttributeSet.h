@@ -174,6 +174,24 @@ public:
 	FGameplayAttributeData Mana;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana);
 
+	/*
+	* Meta Attribute
+	*  메타 속성은 주로 게임 플레이 시 특정한 목적을 위해 사용되는 임시적인 속성이며,
+	* 일반적으로 복제되지 않습니다. 이러한 메타 속성들은 게임 시스템이나 로직에서 중간 계산 등을 수행하기 위해 사용되는데,
+	* 실제로는 최종적으로 표시되는 속성 값과는 직접적인 상호작용이 없습니다.
+	* 예를 들어, 게임에서 데미지 계산을 수행할 때 특정 효과가 가한 데미지를 표현하는 메타 속성이 있을 수 있습니다. 
+	*이 메타 속성은 일시적으로 데미지 값을 저장하고 계산에 사용되며, 
+	 * 최종적으로는 실제 체력과 같은 실제 속성에 영향을 미칩니다.
+	*/
+
+	/*
+	* Meta Attribute
+	*/
+
+	//들어온 데미지
+	UPROPERTY(BlueprintReadOnly ,Category = "Meta Attributes")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
 
 
 	//중요
