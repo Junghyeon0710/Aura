@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameplayEffectTypes.h"
 #include "AuraProjectile.generated.h"
 
 class USphereComponent;
@@ -21,6 +22,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr <UProjectileMovementComponent> ProjectileMovement;
+
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
+	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 protected:
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
@@ -32,6 +36,8 @@ protected:
 	/*UFUNCTION()
 	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);*/
 private:
+	UPROPERTY(EditDefaultsOnly)
+	float LifeSpan = 15.f;
 
 	bool bHit = false;
 	UPROPERTY(VisibleAnywhere)
