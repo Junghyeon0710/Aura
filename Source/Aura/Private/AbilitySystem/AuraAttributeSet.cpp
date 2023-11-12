@@ -156,6 +156,12 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 			//치명적인 데미지를 입음
 			const bool bFatal = NewHealth <= 0.f;
+			if (!bFatal)
+			{
+				FGameplayTagContainer TagContainer;
+				TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			}
 		}
 	}
 
