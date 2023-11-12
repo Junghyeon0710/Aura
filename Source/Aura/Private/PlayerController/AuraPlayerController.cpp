@@ -11,6 +11,8 @@
 #include "AuraGameplayTags.h"
 #include "NavigationSystem.h"
 #include "NavigationPath.h"
+#include "GameFramework/Character.h"
+#include "UI/Widget/DamageTextComponent.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -26,6 +28,25 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	CursorTrace();
 	AutoRun();
 
+}
+
+void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter)
+{
+	if (IsValid(TargetCharacter) &&  DamageTextComponentClass)
+	{
+		UDamageTextComponent* DamageText = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
+		// 컴포넌트를 엔진에 등록합니다.
+		DamageText->RegisterComponent();
+
+		// 대상 캐릭터의 루트 컴포넌트에 데미지 텍스트를 연결합니다.
+		DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+
+		// 데미지 텍스트를 대상 캐릭터에 붙인 후, 분리합니다. (애니메이션을 위해)
+		DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+
+		// 데미지 텍스트에 표시할 데미지 양을 설정합니다.
+		DamageText->SetDamageText(DamageAmount);
+	}
 }
 
 void AAuraPlayerController::AutoRun()
