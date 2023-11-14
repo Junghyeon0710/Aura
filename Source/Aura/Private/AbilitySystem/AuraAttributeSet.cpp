@@ -100,6 +100,8 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 void UAuraAttributeSet::SetEffectProperites(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
 {
 	// Source = 효과의 원인, Target = 효과의 대상 (이 액터뷰셋 소유주)
+	//컨텍스트"는 어떤 일이 일어나는 상황을 포괄적으로 의미
+	//핸들은 객체나 자원을 식별하는 데 사용
 	Props.EffectContextHandle = Data.EffectSpec.GetContext();
 	Props.SourceASC = Props.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
 	if (IsValid(Props.SourceASC) && Props.SourceASC->AbilityActorInfo.IsValid() && Props.SourceASC->AbilityActorInfo->AvatarActor.IsValid())
