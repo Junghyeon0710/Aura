@@ -9,6 +9,7 @@
 #include "Interaction/CombatInterface.h"
 #include "Actor/AuraAbilityTypes.h"
 
+
 struct AuraDamageStatics
 {
 	//캡처 매크로
@@ -67,7 +68,12 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluationParameters.TargetTags = TargetTags;
 	
 	//Magnitude호출해서 데미지 입기
-	float Damage = Spec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Damage);
+	float Damage = 0.f;
+	for (FGameplayTag DamageTypeTag : FAuraGameplayTags::Get().DamageTypes)
+	{
+		const float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag);
+		Damage += DamageTypeValue;
+	}
 
 	//타겟 블록찬스 캡처, 성공적인 블록이 있었나
 	//있으면 데미지 절반으로 줄임
