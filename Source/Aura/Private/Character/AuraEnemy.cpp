@@ -23,6 +23,11 @@ AAuraEnemy::AAuraEnemy()
 	//이펙트 복제 안 함
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AuraAttributeSet");
 
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
