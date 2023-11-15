@@ -62,7 +62,7 @@ void AAuraEffectActor::ApplayEffectToTarget(AActor* TargetActor, TSubclassOf<UGa
         ActiveEffectHandles.Add(ActiveEffectHandle, TargetASC);
     }
 
-    if (bDestroyOnEffectRemoval && EffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Instant)
+    if (!bIninfinte)
     {
         Destroy();
     }
