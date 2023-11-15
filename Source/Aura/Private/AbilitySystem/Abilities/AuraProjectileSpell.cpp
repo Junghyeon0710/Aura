@@ -25,7 +25,8 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
 		FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
 		//(A-B).Roation 는 B에서 A의 방향을 알려준다.
-		Rotation.Pitch = 0.f;
+
+
 		FTransform SpawnTrnasform;
 		SpawnTrnasform.SetLocation(SocketLocation);
 		SpawnTrnasform.SetRotation(Rotation.Quaternion());
