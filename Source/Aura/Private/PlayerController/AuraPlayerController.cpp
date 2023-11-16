@@ -156,10 +156,13 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 					Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
 
 				}
-				//캐릭터 클릭 위치를 마지막 지점으로 해줌
-				CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
-				// 자동으로 그위치로 감
-				bAutoRunning = true;
+				if (NavPath->PathPoints.Num() > 0)
+				{
+					//캐릭터 클릭 위치를 마지막 지점으로 해줌
+					CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
+					// 자동으로 그위치로 감
+					bAutoRunning = true;
+				}
 			}
 		}
 		FollowTime = 0.f; //마우스 클릭시간 초기화
