@@ -26,8 +26,9 @@ UAbilitySystemComponent* AAutraCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-FVector AAutraCharacterBase::GetCombatSocketLocation()
+FVector AAutraCharacterBase::GetCombatSocketLocation_Implementation()
 {
+	check(Weapon);
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
 }
 
@@ -40,6 +41,16 @@ void AAutraCharacterBase::Die()
 {
 	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
 	MulticastHandleDeath();
+}
+
+bool AAutraCharacterBase::IsDead_Implementation() const
+{
+	return bDead;
+}
+
+AActor* AAutraCharacterBase::GetAvatar_Implementation()
+{
+	return this;
 }
 
 void AAutraCharacterBase::MulticastHandleDeath_Implementation()
@@ -55,6 +66,7 @@ void AAutraCharacterBase::MulticastHandleDeath_Implementation()
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Dissolve();
+	bDead = true;
 }
 
 void AAutraCharacterBase::BeginPlay()

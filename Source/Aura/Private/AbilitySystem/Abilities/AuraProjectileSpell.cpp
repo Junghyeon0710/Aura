@@ -18,54 +18,50 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (!bIsServer) return;
 
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo());
+	FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
+	//(A-B).Roation 는 B에서 A의 방향을 알려준다.
 
-	if (CombatInterface)
+
+	FTransform SpawnTrnasform;
+	SpawnTrnasform.SetLocation(SocketLocation);
+	SpawnTrnasform.SetRotation(Rotation.Quaternion());
+
+	//액터를 생성하지만 그 액터가 아직 월드에 추가되지 않은 상태로 생성합니다
+	// FinishSpawning을 호출해야 액터가 스폰됨 
+	AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
+		AuraProjectileClass,
+		SpawnTrnasform,
+		GetOwningActorFromActorInfo(),
+		Cast<APawn>(GetOwningActorFromActorInfo()),
+		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+	const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+	/** 콘텍스트 정보 추가*/
+	FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
+	EffectContextHandle.SetAbility(this);
+	EffectContextHandle.AddSourceObject(Projectile);
+	TArray<TWeakObjectPtr<AActor >> Actors;
+	Actors.Add(Projectile);
+	EffectContextHandle.AddActors(Actors);
+	FHitResult HitResult;
+	HitResult.Location = ProjectileTargetLocation;
+	EffectContextHandle.AddHitResult(HitResult);
+
+	const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
+
+	FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+
+	for (auto& Pair : DamageType)
 	{
-		const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
-		FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
-		//(A-B).Roation 는 B에서 A의 방향을 알려준다.
+		const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
+		//Modifiers에서 Magnitude Calculation Type을 Set by Caller했을 때 사용자 지정 값
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
 
-
-		FTransform SpawnTrnasform;
-		SpawnTrnasform.SetLocation(SocketLocation);
-		SpawnTrnasform.SetRotation(Rotation.Quaternion());
-
-		//액터를 생성하지만 그 액터가 아직 월드에 추가되지 않은 상태로 생성합니다
-		// FinishSpawning을 호출해야 액터가 스폰됨 
-		AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
-			AuraProjectileClass,
-			SpawnTrnasform,
-			GetOwningActorFromActorInfo(),
-			Cast<APawn>(GetOwningActorFromActorInfo()),
-			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-
-		const UAbilitySystemComponent* SourceASC =  UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
-		/** 콘텍스트 정보 추가*/
-		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
-		EffectContextHandle.SetAbility(this);
-		EffectContextHandle.AddSourceObject(Projectile);
-		TArray<TWeakObjectPtr<AActor >> Actors;
-		Actors.Add(Projectile);
-		EffectContextHandle.AddActors(Actors);
-		FHitResult HitResult;
-		HitResult.Location = ProjectileTargetLocation;
-		EffectContextHandle.AddHitResult(HitResult);
-		
-		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
-		
-		FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
-
-		for (auto& Pair : DamageType)
-		{
-			const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
-			//Modifiers에서 Magnitude Calculation Type을 Set by Caller했을 때 사용자 지정 값
-			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
-
-		}
-		
-		Projectile->DamageEffectSpecHandle = SpecHandle;
-
-		Projectile->FinishSpawning(SpawnTrnasform);
 	}
+
+	Projectile->DamageEffectSpecHandle = SpecHandle;
+
+	Projectile->FinishSpawning(SpawnTrnasform);
+	
 }

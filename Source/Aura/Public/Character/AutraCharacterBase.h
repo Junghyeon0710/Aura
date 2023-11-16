@@ -23,13 +23,19 @@ public:
 	AAutraCharacterBase();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
-	virtual FVector GetCombatSocketLocation() override;
+
 
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-	virtual void Die() override;
 
 	UFUNCTION(NetMulticast,Reliable)
 	virtual void MulticastHandleDeath();
+
+	/** Combat Interface*/
+	virtual FVector GetCombatSocketLocation_Implementation() override;
+	virtual void Die() override;
+	virtual bool IsDead_Implementation() const override;
+	virtual AActor* GetAvatar_Implementation() override;
+	/** end Combat Interface*/
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
@@ -39,6 +45,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	FName WeaponTipSocketName;
+
+	bool bDead = false;
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
