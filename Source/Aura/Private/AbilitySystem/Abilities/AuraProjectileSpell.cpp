@@ -52,7 +52,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 
 	FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
 
-	for (auto& Pair : DamageType)
+	for (auto& Pair : DamageTypes)
 	{
 		const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
 		//Modifiers에서 Magnitude Calculation Type을 Set by Caller했을 때 사용자 지정 값
