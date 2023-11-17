@@ -58,6 +58,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	{
 		const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
 		//Modifiers에서 Magnitude Calculation Type을 Set by Caller했을 때 사용자 지정 값
+		//호출자 크기 값으로 설정되는 게임플레이 태그를 설정합니다.
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
 
 	}
