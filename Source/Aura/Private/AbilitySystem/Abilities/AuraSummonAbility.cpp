@@ -15,9 +15,23 @@ TArray<FVector> UAuraSummonAbility::GetSpawnLocation()
 	for (int32 i = 0; i < NumMinions; i++)
 	{
 		//적의 45도 왼쪽 각도에서 Z축으로 DeltaSpread *i만큼 회전
+		//0도 부터 처음 SpawnSpread값까지 구함
 		const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
 		//적의 스폰위치 랜덤으로 생성
-		const FVector ChosenSpawnLocation = Location + Direction * FMath::FRandRange(MinSpawnDistance, MaxSpawnDistance);
+		 FVector ChosenSpawnLocation = Location + Direction * FMath::FRandRange(MinSpawnDistance, MaxSpawnDistance);
+		
+		//언덕일수도 있으니 검사해봄
+		FHitResult Hit;
+		GetWorld()->LineTraceSingleByChannel(
+			Hit,
+			ChosenSpawnLocation + FVector(0.f, 0.f, 400.f),
+			ChosenSpawnLocation - FVector(0.f, 0.f, 400.f),
+			ECollisionChannel::ECC_Visibility);
+		if (Hit.bBlockingHit)
+		{
+			ChosenSpawnLocation = Hit.ImpactNormal;
+		}
+
 		SpawnLocation.Add(ChosenSpawnLocation);
 
 
