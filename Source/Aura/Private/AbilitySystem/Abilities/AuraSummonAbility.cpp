@@ -29,7 +29,7 @@ TArray<FVector> UAuraSummonAbility::GetSpawnLocation()
 			ECollisionChannel::ECC_Visibility);
 		if (Hit.bBlockingHit)
 		{
-			ChosenSpawnLocation = Hit.ImpactNormal;
+			ChosenSpawnLocation = Hit.ImpactPoint;
 		}
 
 		SpawnLocation.Add(ChosenSpawnLocation);
@@ -37,4 +37,10 @@ TArray<FVector> UAuraSummonAbility::GetSpawnLocation()
 
 	}
 	return SpawnLocation;
+}
+
+TSubclassOf<APawn> UAuraSummonAbility::GetRandomMinionClass()
+{
+	int32 Selction = FMath::RandRange(0, MinonClasses.Num() - 1);
+	return MinonClasses[Selction];
 }

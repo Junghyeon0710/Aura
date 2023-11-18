@@ -39,6 +39,8 @@ public:
 	virtual TArray<FTaggedMontage> GetAttackMontaged_Implementation() override;
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
 	virtual FTaggedMontage getTaggeMontageByTag_Implementation(const FGameplayTag& MontageTag);
+	virtual int32 GetMinionCount_Implementation();
+	virtual void IncreamentMinionCount_Implementation(int32 Amount);
 	/** end Combat Interface*/
 
 	UPROPERTY(EditAnywhere,Category = "Combat")
@@ -105,6 +107,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	USoundBase* DeathSound;
+
+	/*¹Ì´Ï¾ð*/
+
+	int32 MinionCount = 0;
 private:
 	UPROPERTY(EditAnywhere, Category = Abilities)
 	TArray <TSubclassOf<UGameplayAbility>> StartupAbilites;

@@ -13,7 +13,7 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
-void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag)
+void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag, bool bOverridePitch, float PitchOverride)
 {
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (!bIsServer) return;
@@ -23,8 +23,10 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		SocketTag);
 	FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
 	//(A-B).Roation 는 B에서 A의 방향을 알려준다.
-
-
+	if (bOverridePitch)
+	{
+		Rotation.Pitch = PitchOverride;
+	}
 	FTransform SpawnTrnasform;
 	SpawnTrnasform.SetLocation(SocketLocation);
 	SpawnTrnasform.SetRotation(Rotation.Quaternion());
