@@ -59,6 +59,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Combat)
 	FName RightSocketName;
 
+	UPROPERTY(EditAnywhere, Category = Combat)
+	FName TailSocketName;
+
 	bool bDead = false;
 
 	UPROPERTY()
