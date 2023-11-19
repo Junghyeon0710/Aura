@@ -35,6 +35,8 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		//GiveAbilityAndActivateOnce(AbilitySpec); //능력 한번만 부여
 
 	}
+	bStartupAbilitiesGiven = true;
+	AbilitiesGivenDeleate.Broadcast(this);
 }
 
 //AuraPlayerController에서 호출

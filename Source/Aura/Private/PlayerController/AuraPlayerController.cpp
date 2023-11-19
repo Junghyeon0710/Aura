@@ -135,7 +135,6 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 	//타겟에 마우스포인트가 없고 쉬프트키를 안눌렀으면
 	if (!bTargeting || !bShiftKeyDown)
 	{
-		//능력 비활성화
 		const APawn* ControllerPawn = GetPawn();
 		//짧게 눌렀으면 그 지역으로 가야됨
 		if (FollowTime <= ShortPressThreshold && ControllerPawn)
