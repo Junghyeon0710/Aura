@@ -5,6 +5,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
+#include "PlayerState/AuraPlayerState.h"
 
 void UOverlayWidgetController::BrodcastInitialValues()
 {
@@ -19,8 +20,10 @@ void UOverlayWidgetController::BrodcastInitialValues()
 
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
-	const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
+	AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
+	AuraPlayerState->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChanged);
 
+	const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
 	/** 체력값이 바뀌면 호출되는 델리게이트에 람다로 바인딩*/
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
 		AuraAttributeSet->GetHealthAttribute()).AddLambda(
@@ -95,4 +98,37 @@ void UOverlayWidgetController::OnInitializeStartupAbilities(UAuraAbilitySystemCo
 
 		});
 	AuraAbilitySystemComponent->ForEachAbility(BroadcastDelegate); //바인딩 되어있는거 실행
+}
+
+void UOverlayWidgetController::OnXPChanged(int32 NewXp)const
+{
+	const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
+	const ULevelUpInfo* LevelUpInfo = AuraPlayerState->LevelupInfo;
+
+	checkf(LevelUpInfo, TEXT("플레이어 스테이트에서 설정해주세여"));
+
+	const int32 Level = LevelUpInfo->FindLevelForXp(NewXp);
+	const int32 MaxLevel = LevelUpInfo->LevelUpInformation.Num();
+
+	if (Level <= MaxLevel && Level > 0)
+	{
+		//1레벌 요구사항 300
+		//2레벨 요구사항 900이라 가정
+
+		//현재 레벨 경험치 요구사항 총량
+		const int32 LevelUpRequirement = LevelUpInfo->LevelUpInformation[Level].LevelupRequirement;
+		//전 레벨 경험치 요구사항 총량
+		const int32 PreviousLevelUpRequirement = LevelUpInfo->LevelUpInformation[Level - 1].LevelupRequirement;
+		//레벨업에 필요한 경험치 총량
+		const int32 DeltaLevelUpRequirement =  LevelUpRequirement - PreviousLevelUpRequirement;
+		//내 경험치에서 전 레벨 경험치 요구사항을 뺌(그러면 그레벨에서 부터 얼마나 필요한지 알 수 있음)
+		//2레벨이면 내가 갖고있는 경험치 500 - 전레벨 경험치 요구사항(300) = 200
+		const int32 XpForThisLevel = NewXp - PreviousLevelUpRequirement;
+		//내가 레벨에서 갖고있는 경험치에서 레벨업에 필요한 경험치 총량을 나눔
+		//200/600 = 0.333퍼
+		const float XpBarPercent = static_cast<float>(XpForThisLevel) / static_cast<float>(DeltaLevelUpRequirement);
+
+		//현재 경험치 퍼센트 방송
+		OnXpPercentChangedChanged.Broadcast(XpBarPercent);
+	}
 }
