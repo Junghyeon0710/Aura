@@ -218,6 +218,11 @@ public:
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
 
+	//들어온 경험치
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData IncomingXP;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingXP);
+
 
 	//중요
 	UFUNCTION()
@@ -288,5 +293,5 @@ private:
 
 	void SetEffectProperites(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props)const;
 	void ShowFloatingText(const FEffectProperties& Props, float Damage,bool bBlockedHit, bool bCriticalHit)const;
-
+	void SendXPEvent(const FEffectProperties& Props);
 };

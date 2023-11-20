@@ -103,6 +103,11 @@ void AAutraCharacterBase::IncreamentMinionCount_Implementation(int32 Amount)
 	MinionCount += Amount;
 }
 
+ECharacterClass AAutraCharacterBase::GetCharacterClass_Implementation()
+{
+	return CharacterClass;
+}
+
 void AAutraCharacterBase::MulticastHandleDeath_Implementation()
 {
 	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), GetActorRotation());
@@ -157,6 +162,7 @@ void AAutraCharacterBase::AddCharacterAbilities()
 	if (!HasAuthority()) return; //서버가 아니면 
 
 	AuraASC->AddCharacterAbilities(StartupAbilites);
+	AuraASC->AddCharacterPassiveAbilities(StartupPassiveAbilites);
 
 }
 

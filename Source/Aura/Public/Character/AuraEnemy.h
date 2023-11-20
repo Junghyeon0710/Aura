@@ -6,7 +6,6 @@
 #include "Character/AutraCharacterBase.h"
 #include "../Interaction/EnemyInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
-#include "../AbilitySystem/Data/CharacterClassInfo.h"
 #include "AuraEnemy.generated.h"
 
 
@@ -56,6 +55,7 @@ public:
 	UPROPERTY(BlueprintReadOnly,Category = "Combat")
 	TObjectPtr<AActor> CombatTarget;
 
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
@@ -63,9 +63,6 @@ protected:
 	/** 캐릭터 레벨 (Target)*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	int32 Level = 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
-	ECharacterClass CharacterClass = ECharacterClass::Warrior;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBar;
