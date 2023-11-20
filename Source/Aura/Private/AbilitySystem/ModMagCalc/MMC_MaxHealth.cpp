@@ -33,10 +33,11 @@ float UMMC_MaxHealth::CalculateBaseMagnitude_Implementation(const FGameplayEffec
 	// 음수 값이 되지 않도록 0 이상으로 보정합니다.
 	Vigor = FMath::Max<float>(Vigor, 0.f);
 
-	// 캐릭터의 레벨을 가져오기 위해 CombatInterface로 캐스트합니다.
-	// ApplyGameplayEffect해줄때 AddSourceObject를 해줘야함 안 그럼 널
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
-	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
+	int32 PlayerLevel = 1;
+	if (Spec.GetContext().GetSourceObject()->Implements<UCombatInterface>())
+	{
+		PlayerLevel = ICombatInterface::Execute_GetPlayerLevel(Spec.GetContext().GetSourceObject());
+	}
 
 	return 80.f + 2.5f * Vigor + 10.f * PlayerLevel;
 }

@@ -32,7 +32,7 @@ public:
 	/**적 인테페이스 */
 
 	/** Combat Interface*/
-	virtual int32 GetPlayerLevel() override;
+	virtual int32 GetPlayerLevel_Implementation() override;
 	/** end Combat Interface*/
 	virtual void Die() override;
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
