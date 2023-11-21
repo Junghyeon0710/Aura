@@ -66,8 +66,10 @@ class AURA_API UAuraAttributeSet : public UAttributeSet
 public:
 	UAuraAttributeSet();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)const override;
+	
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)override;
+	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)override;
 
 	//나는 게임플레이 속성을 원합니다. 왜냐하면 속성이 변경될 때 브로드캐스트되는 대리자가 있고, 
 	//그 브로드캐스트는 게임플레이 속성을 사용합니다. 그리고 나는 태그를 이러한 속성에 매핑하는 맵을 원합니다.
@@ -294,4 +296,6 @@ private:
 	void SetEffectProperites(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props)const;
 	void ShowFloatingText(const FEffectProperties& Props, float Damage,bool bBlockedHit, bool bCriticalHit)const;
 	void SendXPEvent(const FEffectProperties& Props);
+	bool bTopOffHealth = false;
+	bool bTopOffMana = false;
 };

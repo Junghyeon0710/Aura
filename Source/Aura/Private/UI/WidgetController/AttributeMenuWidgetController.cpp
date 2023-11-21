@@ -5,6 +5,8 @@
 #include "AbilitySystem/Data/AttributeInfo.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AuraGameplayTags.h"
+#include <PlayerState/AuraPlayerState.h>
+#include <AbilitySystem/AuraAbilitySystemComponent.h>
 void UAttributeMenuWidgetController::BrodcastInitialValues()
 {
 	//오라석 속성을 가져옴
@@ -16,6 +18,8 @@ void UAttributeMenuWidgetController::BrodcastInitialValues()
 	{
 		BroadcastAttributeInfo(Pair.Key, Pair.Value());
 	}
+	AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
+	AttributePointsChangedDelegate.Broadcast(AuraPlayerState->GetAttribtuePoints());
 }
 
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()
@@ -31,6 +35,21 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 			}
 		);
 	}
+
+	AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
+	AuraPlayerState->OnAttributePointsChangedDelegate.AddLambda(
+		[this](int32 Points) 
+		{
+			AttributePointsChangedDelegate.Broadcast(Points);
+		}
+	);
+}
+
+void UAttributeMenuWidgetController::UpgradeAttribute(const FGameplayTag& AttributeTag)
+{
+	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+	AuraASC->UpgradeAttribute(AttributeTag);
+
 }
 
 void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& AttributeTag, const FGameplayAttribute& Attribute) const
