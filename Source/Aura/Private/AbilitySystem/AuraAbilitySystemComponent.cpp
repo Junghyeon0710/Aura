@@ -32,6 +32,8 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		{
 			//동적 태그에 추가
 			AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupInputTag);
+			AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Equipped);
+			
 			GiveAbility(AbilitySpec); //능력부여
 		}
 		//GiveAbilityAndActivateOnce(AbilitySpec); //능력 한번만 부여
@@ -130,6 +132,19 @@ FGameplayTag UAuraAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbi
 		if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("InputTag"))))
 		{
 			return Tag;
+		}
+	}
+	return FGameplayTag();
+}
+
+FGameplayTag UAuraAbilitySystemComponent::GetAtatusFromSpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+	//동적으로 추가해서 동적으로 찾아야함
+	for (FGameplayTag StausTag : AbilitySpec.DynamicAbilityTags)
+	{
+		if (StausTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Abilities.Status"))))
+		{
+			return StausTag;
 		}
 	}
 	return FGameplayTag();
