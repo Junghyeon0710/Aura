@@ -206,9 +206,10 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 		if (Props.SourceCharacter->Implements<UPlayerInterface>() && Props.SourceCharacter->Implements<UPlayerInterface>())
 		{
-			const int32 CurrentLevel = ICombatInterface::Execute_GetPlayerLevel(Props.SourceCharacter);
-			const int32 CurrentXP = IPlayerInterface::Execute_GetXp(Props.SourceCharacter);
+			const int32 CurrentLevel = ICombatInterface::Execute_GetPlayerLevel(Props.SourceCharacter); //현제 레벨
+			const int32 CurrentXP = IPlayerInterface::Execute_GetXp(Props.SourceCharacter); //갖고있는 경험치
 
+			//갖고있는 경험치에서 받은 경험치 더해줌
 			const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXP(Props.SourceCharacter, CurrentXP + LocalIncomingXP);
 			const int32 NumberOfLevelUps = NewLevel - CurrentLevel;
 			if (NumberOfLevelUps > 0) //레벨을하면
