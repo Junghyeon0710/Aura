@@ -162,10 +162,11 @@ FGameplayAbilitySpec* UAuraAbilitySystemComponent::GetSpecFromAbilityTag(const F
 		{
 			if (Tag.MatchesTag(AbilityTag))
 			{
-				return &AbilitySpec;
+				return &AbilitySpec; //참조를 앞에 붙이면 주소가됨
 			}
 		}
 	}
+
 	return nullptr;
 }
 
