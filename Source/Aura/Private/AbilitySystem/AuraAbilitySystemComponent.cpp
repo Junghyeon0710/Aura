@@ -211,10 +211,43 @@ void UAuraAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
 			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.Ability, 1);
 			AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Eligible);
 			GiveAbility(AbilitySpec);
-			MarkAbilitySpecDirty(AbilitySpec);
 			//이 함수를 호출하여 변경된 능력 스펙을 표시하면 엔진이 이를 감지하고 클라이언트에게 해당 변경 사항을 전파합니다.
-			ClientUpdateAbilityStatus(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible);
+			MarkAbilitySpecDirty(AbilitySpec);
+			ClientUpdateAbilityStatus(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible,1);
 		}
+	}
+}
+
+void UAuraAbilitySystemComponent::ServerSpendSpellPoint_Implementation(const FGameplayTag& AbilityTag)
+{
+	if (FGameplayAbilitySpec* AbilitySpec = GetSpecFromAbilityTag(AbilityTag))
+	{
+		//포인트 1사용
+		if (GetAvatarActor()->Implements<UPlayerInterface>())
+		{
+			IPlayerInterface::Execute_AddToSpellPoints(GetAvatarActor(), -1);
+		}
+
+		const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+		FGameplayTag Status = GetStatusFromSpec(*AbilitySpec);
+		//활성화 할 수 있는 아이콘이라면
+		if (Status.MatchesTagExact(GameplayTags.Abilities_Status_Eligible))
+		{
+			//태그 제거
+			AbilitySpec->DynamicAbilityTags.RemoveTag(GameplayTags.Abilities_Status_Eligible);
+			//태그 추가
+			AbilitySpec->DynamicAbilityTags.AddTag(GameplayTags.Abilities_Status_UnLocked);
+			//상태를 잠금 풀림으로 바꿈
+			Status = GameplayTags.Abilities_Status_UnLocked;
+		}//장착한 상태이거나 잠금 풀려있는 상태면 레벨업
+		else if (Status.MatchesTagExact(GameplayTags.Abilities_Status_Equipped) || Status.MatchesTagExact(GameplayTags.Abilities_Status_UnLocked))
+		{
+			AbilitySpec->Level += 1;
+		}
+		//클라이언트에 알려줌
+		ClientUpdateAbilityStatus(AbilityTag, Status, AbilitySpec->Level);
+		//이 함수를 호출하여 변경된 능력 스펙을 표시하면 엔진이 이를 감지하고 클라이언트에게 해당 변경 사항을 전파합니다.
+		MarkAbilitySpecDirty(*AbilitySpec);
 	}
 }
 
@@ -230,9 +263,9 @@ void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
 
 }
 
-void UAuraAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag)
+void UAuraAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, int32 AbilityLevel)
 {
-	AbilityStatusChanged.Broadcast(AbilityTag, StatusTag);
+	AbilityStatusChanged.Broadcast(AbilityTag, StatusTag, AbilityLevel);
 }
 
 void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
