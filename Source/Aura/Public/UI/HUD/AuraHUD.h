@@ -10,6 +10,7 @@ class UAuraUserWidget;
 class UOverlayWidgetController;
 struct FWidgetControllerParms;
 class UAttributeMenuWidgetController;
+class USpellMenuWidgetController;
 /**
  * 
  */
@@ -22,6 +23,8 @@ public:
 
 	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParms& WCParms);
 	UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const FWidgetControllerParms& WCParams);
+	USpellMenuWidgetController* GetSpellMenuWidgetController(const FWidgetControllerParms& WCParams);
+
 	//캐릭터에서 호출 
 	void InitOverlay(class APlayerController* PC, class APlayerState* PS,class  UAbilitySystemComponent* ASC, class UAttributeSet* AS);
 
@@ -44,4 +47,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UAttributeMenuWidgetController> AttributeMenuWidgetControllerClass;
+
+	UPROPERTY()
+	TObjectPtr<USpellMenuWidgetController> SpellMenuWidgetController;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<USpellMenuWidgetController> SpellMenuWidgetControllerClass;
 };
