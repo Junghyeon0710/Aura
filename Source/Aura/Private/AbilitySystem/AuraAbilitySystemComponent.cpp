@@ -251,6 +251,25 @@ void UAuraAbilitySystemComponent::ServerSpendSpellPoint_Implementation(const FGa
 	}
 }
 
+bool UAuraAbilitySystemComponent::GetDescriptionsByAbilityTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription)
+{
+	//능력이 있으면 능력에 대해 설명
+	if (const FGameplayAbilitySpec* AbilitySpec = GetSpecFromAbilityTag(AbilityTag))
+	{
+		if (UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec->Ability))
+		{
+			OutDescription = AuraAbility->GetDescription(AbilitySpec->Level);
+			OutNextLevelDescription = AuraAbility->GetNextLevelDescription(AbilitySpec->Level + 1);
+			return true;
+		}
+	}
+	//능력이 없으므로 잠긴설명
+	const UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
+	OutDescription = UAuraGameplayAbility::GetLockedDescription(AbilityInfo->FindAbilityInfoForTag(AbilityTag).LevelRequirement);
+	OutNextLevelDescription = FString();
+	return false;
+}
+
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
 {
 	Super::OnRep_ActivateAbilities();
