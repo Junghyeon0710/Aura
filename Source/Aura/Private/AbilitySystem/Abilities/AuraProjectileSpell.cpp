@@ -45,7 +45,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
 	EffectContextHandle.SetAbility(this);
 	EffectContextHandle.AddSourceObject(Projectile);
-	TArray<TWeakObjectPtr<AActor >> Actors;
+	TArray<TWeakObjectPtr<AActor>> Actors;
 	Actors.Add(Projectile);
 	EffectContextHandle.AddActors(Actors);
 	FHitResult HitResult;
@@ -56,14 +56,10 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 
 	FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
 
-	for (auto& Pair : DamageTypes)
-	{
-		const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
-		//Modifiers에서 Magnitude Calculation Type을 Set by Caller했을 때 사용자 지정 값
-		//호출자 크기 값으로 설정되는 게임플레이 태그를 설정합니다.
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
-
-	}
+	const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+	//Modifiers에서 Magnitude Calculation Type을 Set by Caller했을 때 사용자 지정 값
+	//호출자 크기 값으로 설정되는 게임플레이 태그를 설정합니다.
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, DamageType, ScaledDamage);
 
 	Projectile->DamageEffectSpecHandle = SpecHandle;
 
