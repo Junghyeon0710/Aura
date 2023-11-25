@@ -8,10 +8,17 @@
 #include "Aura/Aura.h"
 #include <AuraGameplayTags.h>
 #include <Kismet/GameplayStatics.h>
+#include "Debuff/DebuffNiagaraComponent.h"
 
 AAutraCharacterBase::AAutraCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	//BurnDebuffComponent 캐릭터 베이스에서 의존하도록 함
+	//BurnDebuffComponent에서도 권한 가지면 순환 의존성 발생
+	BurnDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("BurnDebuff");
+	BurnDebuffComponent->SetupAttachment(GetRootComponent());
+	BurnDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Burn;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
@@ -108,6 +115,16 @@ ECharacterClass AAutraCharacterBase::GetCharacterClass_Implementation()
 	return CharacterClass;
 }
 
+FOnASCRegistered AAutraCharacterBase::GetOnASCRegisteredDelegate()
+{
+	return OnASCRegistered;
+}
+
+FOnDeath AAutraCharacterBase::GetOnDeathDelegate()
+{
+	return OnDeath;
+}
+
 void AAutraCharacterBase::MulticastHandleDeath_Implementation()
 {
 	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), GetActorRotation());
@@ -124,6 +141,7 @@ void AAutraCharacterBase::MulticastHandleDeath_Implementation()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Dissolve();
 	bDead = true;
+	OnDeath.Broadcast(this);
 }
 
 void AAutraCharacterBase::BeginPlay()

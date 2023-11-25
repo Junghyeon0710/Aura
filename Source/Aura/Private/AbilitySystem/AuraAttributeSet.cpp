@@ -238,6 +238,7 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	Effect->DurationMagnitude = FScalableFloat(DebuffDuration);
 	//태그를 추가
 	Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
+	Effect->InheritableOwnedTagsContainer.Added.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
 	//스택추가
 	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
 	//카운트는 하나
@@ -255,6 +256,7 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	//효과 적용
 	if (FGameplayEffectSpec* MutableSpec = new FGameplayEffectSpec(Effect, EffectContext, 1.f))
 	{
+		MutableSpec->DynamicGrantedTags.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
 		FAuraGameplayEffectContext* AuraContext = static_cast<FAuraGameplayEffectContext*>(MutableSpec->GetContext().Get());
 		TSharedPtr<FGameplayTag> DebuffDamageType = MakeShareable(new FGameplayTag(DamageType));
 		AuraContext->SetDamageType(DebuffDamageType);

@@ -43,7 +43,12 @@ public:
 	virtual int32 GetMinionCount_Implementation();
 	virtual void IncreamentMinionCount_Implementation(int32 Amount);
 	virtual ECharacterClass GetCharacterClass_Implementation();
+	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;
+	virtual FOnDeath GetOnDeathDelegate() override;
 	/** end Combat Interface*/
+
+	FOnASCRegistered OnASCRegistered;
+	FOnDeath OnDeath;
 
 	UPROPERTY(EditAnywhere,Category = "Combat")
 	TArray<FTaggedMontage> AttackMontage;
@@ -116,6 +121,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	ECharacterClass CharacterClass = ECharacterClass::Warrior;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UDebuffNiagaraComponent> BurnDebuffComponent;
 private:
 	UPROPERTY(EditAnywhere, Category = Abilities)
 	TArray <TSubclassOf<UGameplayAbility>> StartupAbilites;
