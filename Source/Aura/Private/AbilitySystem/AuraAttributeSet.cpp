@@ -194,7 +194,8 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 			ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
 			if (CombatInterface)
 			{
-				CombatInterface->Die();
+				FVector DeathImpluse = UAuraAbilitySystemLibrary::GetDeathImpulse(Props.EffectContextHandle);
+				CombatInterface->Die(UAuraAbilitySystemLibrary::GetDeathImpulse(Props.EffectContextHandle));
 			}
 			SendXPEvent(Props);
 		}
@@ -237,7 +238,7 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	//값을 설정
 	Effect->DurationMagnitude = FScalableFloat(DebuffDuration);
 	//태그를 추가
-	Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
+	//Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
 	Effect->InheritableOwnedTagsContainer.Added.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
 	//스택추가
 	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;

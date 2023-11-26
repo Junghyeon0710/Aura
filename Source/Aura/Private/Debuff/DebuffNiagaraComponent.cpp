@@ -22,8 +22,10 @@ void UDebuffNiagaraComponent::BeginPlay()
 	}
 	else if (CombatInterface)
 	{
-		//람다는 캡쳐를 참고함 weak로 참고 카운트 안하게 해줌
+		//람다는 캡쳐를 참고함 weak로 참조 카운트 안하게 해줌
 		//객체 소유권은 캐릭터한테만 있음
+		//참조를 유지하는 동안 삭제되면 참조가 하나 더 있으므로 삭제가 안될 수 있음
+		//그러므로 안전하게 Weak람다를 해줘서 참조를 안전하게 해줌
 		CombatInterface->GetOnASCRegisteredDelegate().AddWeakLambda(this, [this](UAbilitySystemComponent* InASC)
 			{
 				InASC->RegisterGameplayTagEvent(DebuffTag, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UDebuffNiagaraComponent::DebuffTagChanged);
@@ -38,7 +40,10 @@ void UDebuffNiagaraComponent::BeginPlay()
 
 void UDebuffNiagaraComponent::DebuffTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
-	if (NewCount > 0)
+	const bool bOwnerValid = IsValid(GetOwner());
+	const bool bOwnerAlive = GetOwner()->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsDead(GetOwner());
+	
+	if (NewCount > 0 && bOwnerValid && bOwnerAlive)
 	{
 		Activate();
 	}
