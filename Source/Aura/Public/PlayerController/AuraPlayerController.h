@@ -78,8 +78,12 @@ private:
 	/** 도착지에 얼마나 가까이 왔는지*/
 	UPROPERTY(EditDefaultsOnly)
 	float AutoRunAcceptanceRadius = 50.f;
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineComponent> Spline;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UNiagaraSystem> ClickNiagaraSystem;
 
 	void AutoRun();
 
