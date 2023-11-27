@@ -3,7 +3,8 @@
 
 #include "AbilitySystem/Abilities/AuraFireBolt.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "Actor/AuraProjectile.h"
 
 FString UAuraFireBolt::GetDescription(int32 Level)
 {
@@ -117,32 +118,27 @@ void UAuraFireBolt::SpawnProjectiles(const FVector& ProjectileTargetLocation, co
 	}
 
 	const FVector Forward = Rotation.Vector();
-	const FVector LeftOfSpread = Forward.RotateAngleAxis(-ProjectileSpread / 2.f, FVector::UpVector);
-	const FVector RightOfSpread = Forward.RotateAngleAxis(ProjectileSpread / 2.f, FVector::UpVector);
 
-	//NumProjectiles = FMath::Min(MaxnumProjectile, GetAbilityLevel());
-	if (NumProjectiles > 1)
+	TArray<FRotator> Rotations = UAuraAbilitySystemLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, ProjectileSpread, NumProjectiles);
+	for (const FRotator& Rot : Rotations)
 	{
-		const float DeltaSpread = ProjectileSpread / (NumProjectiles - 1);
-		for (int32 i = 0; i < NumProjectiles; i++)
-		{		
-			//적의 45도 왼쪽 각도에서 Z축으로 DeltaSpread *i만큼 회전
-			//0도 부터 처음 SpawnSpread값까지 구함
-			const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
-			const FVector Start = SocketLocation;
-			UKismetSystemLibrary::DrawDebugArrow(
-				GetAvatarActorFromActorInfo(),
-				Start,
-				Start + Direction * 75.f,
-				1,
-				FLinearColor::Red,
-				120,
-				1);
-		}
-	}
-	else
-	{
+		FTransform SpawnTrnasform;
+		SpawnTrnasform.SetLocation(SocketLocation);
+		SpawnTrnasform.SetRotation(Rot.Quaternion());
 
+
+		//액터를 생성하지만 그 액터가 아직 월드에 추가되지 않은 상태로 생성합니다
+		// FinishSpawning을 호출해야 액터가 스폰됨 
+		AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
+			AuraProjectileClass,
+			SpawnTrnasform,
+			GetOwningActorFromActorInfo(),
+			Cast<APawn>(GetOwningActorFromActorInfo()),
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+		Projectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
+
+		Projectile->FinishSpawning(SpawnTrnasform);
 	}
-	
+
 }
