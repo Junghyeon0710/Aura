@@ -260,6 +260,7 @@ void UAuraAbilitySystemComponent::ServerSpendSpellPoint_Implementation(const FGa
 		}//장착한 상태이거나 잠금 풀려있는 상태면 레벨업
 		else if (Status.MatchesTagExact(GameplayTags.Abilities_Status_Equipped) || Status.MatchesTagExact(GameplayTags.Abilities_Status_UnLocked))
 		{
+			//어빌리티 레벨 레벨업
 			AbilitySpec->Level += 1;
 		}
 		//클라이언트에 알려줌
@@ -282,7 +283,7 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
 		const bool bStatusValid = Status == GameplayTags.Abilities_Status_Equipped || Status == GameplayTags.Abilities_Status_UnLocked;
 		if (bStatusValid)
 		{
-			// 이 입력 태그(슬롯)를 해당 기능이 있는 모든 기능에서 제거합니다.
+			// 이 입력 태그(슬롯)를 해당 기능이 있는 모든 태그를 기능에서 제거합니다.
 			ClearAbilitiesOfSlot(Slot);
 			// 이 능력의 슬롯을 지웁니다. 다른 슬롯일 경우를 대비하여
 			ClearSlot(AbilitySpec);
