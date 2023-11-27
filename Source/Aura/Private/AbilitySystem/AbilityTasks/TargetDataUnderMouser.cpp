@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/AbilityTasks/TargetDataUnderMouser.h"
 #include "AbilitySystemComponent.h"
+#include <Aura/Aura.h>
 
 UTargetDataUnderMouser* UTargetDataUnderMouser::CreateTargetDataUnderMouser(UGameplayAbility* OwingAbility)
 {
@@ -49,7 +50,7 @@ void UTargetDataUnderMouser::SendMouseCursorData()
 
 	APlayerController* PC = Ability->GetCurrentActorInfo()->PlayerController.Get();
 	FHitResult CursorHit;
-	PC->GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
+	PC->GetHitResultUnderCursor(ECC_Target, false, CursorHit);
 	
 	//어빌리티에 전달할 대상 데이터를 포함하는 핸들
 	FGameplayAbilityTargetDataHandle DataHandle;
