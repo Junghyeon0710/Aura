@@ -56,6 +56,28 @@ void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(const TArray<TSub
 	}
 }
 
+void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
+{
+	if (!InputTag.IsValid()) return;
+
+	//활성화된 어빌리티를 다 가져옴
+	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		//동적으로 할당된 능력 태그에 InputTag가 정확히 일치하는지 확인합니다.
+		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+		{
+			// 능력이 활성화되었을 때 호출되는 함수로 해당 능력에 대한 입력이 눌린 경우 실행됩니다. 
+			AbilitySpecInputPressed(AbilitySpec);
+			//능력이 활성화가 안되있으면
+			if (AbilitySpec.IsActive())
+			{
+				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
+
+			}
+		}
+	}
+}
+
 //AuraPlayerController에서 호출
 void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputTag)
 {
@@ -87,11 +109,13 @@ void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& In
 	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
 		//동적으로 할당된 능력 태그에 InputTag가 정확히 일치하는지 확인합니다.
-		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag) && AbilitySpec.IsActive())
 		{
 			//놓았을 때 호출되는 함수입니다.
 			//능력이 비활성화됨
+	
 			AbilitySpecInputReleased(AbilitySpec);
+			InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
 		}
 	}
 
