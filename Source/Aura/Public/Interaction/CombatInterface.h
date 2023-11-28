@@ -15,6 +15,8 @@ class UAbilitySystemComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeath, AActor*, DeadActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, AActor*, DeadActor);
+
 
 USTRUCT(BlueprintType)
 struct FTaggedMontage
@@ -63,6 +65,10 @@ public:
 	UAnimMontage* GetHitReactMontage();
 	
 	virtual void Die(const FVector& DeathImpulse) = 0;
+	//만약 우리가 죽음 시그니처의 F를 얻고 있다면, 그 델리게이트의 복사본을 반환하는 대신에
+	//실제로 그 인터페이스를 구현하는 캐릭터의 델리게이트에 대한 참조를 반환해야 합니다.
+	//그래야 구현하는 캐릭터값을 넣을 수 있음
+	virtual FOnDeathSignature& GetDeathDelegate() = 0;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool IsDead() const;

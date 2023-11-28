@@ -130,6 +130,11 @@ USkeletalMeshComponent* AAutraCharacterBase::GetWeapon_Implementation()
 	return Weapon;
 }
 
+FOnDeathSignature& AAutraCharacterBase::GetDeathDelegate()
+{
+	return OnDeathDelegate;
+}
+
 void AAutraCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathImpulse)
 {
 	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), GetActorRotation());
@@ -149,6 +154,7 @@ void AAutraCharacterBase::MulticastHandleDeath_Implementation(const FVector& Dea
 	Dissolve();
 	bDead = true;
 	OnDeath.Broadcast(this);
+	OnDeathDelegate.Broadcast(this);
 }
 
 void AAutraCharacterBase::BeginPlay()

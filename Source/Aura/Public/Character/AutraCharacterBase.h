@@ -46,10 +46,12 @@ public:
 	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;
 	virtual FOnDeath GetOnDeathDelegate() override;
 	virtual USkeletalMeshComponent* GetWeapon_Implementation();
+	virtual FOnDeathSignature& GetDeathDelegate() override;
 	/** end Combat Interface*/
 
 	FOnASCRegistered OnASCRegistered;
 	FOnDeath OnDeath;
+	FOnDeathSignature OnDeathDelegate;
 
 	UPROPERTY(EditAnywhere,Category = "Combat")
 	TArray<FTaggedMontage> AttackMontage;
