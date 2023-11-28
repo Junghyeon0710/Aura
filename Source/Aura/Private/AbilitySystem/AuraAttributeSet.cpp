@@ -201,10 +201,13 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 		}
 		else
 		{
-			FGameplayTagContainer TagContainer;
-			TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
-			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
-
+			if (Props.TargetCharacter->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsBeginShocked(Props.TargetCharacter))
+			{
+				FGameplayTagContainer TagContainer;
+				TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			}
+	
 			//넉백
 			const FVector& KnockbackForce = UAuraAbilitySystemLibrary::GetKnockForce(Props.EffectContextHandle);
 			if (!KnockbackForce.IsNearlyZero(1.f))
@@ -244,9 +247,18 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	Effect->Period = DebuffFrequency;
 	//값을 설정
 	Effect->DurationMagnitude = FScalableFloat(DebuffDuration);
+
+	const FGameplayTag DebuffTag = GameplayTags.DamageTypesToDebuffs[DamageType];
 	//태그를 추가
 	//Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
 	Effect->InheritableOwnedTagsContainer.Added.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
+	if (DebuffTag.MatchesTagExact(GameplayTags.Debuff_Stun))
+	{
+		Effect->InheritableOwnedTagsContainer.Added.AddTag(GameplayTags.Player_Block_CursorTrace);
+		Effect->InheritableOwnedTagsContainer.Added.AddTag(GameplayTags.Player_Block_InputHeld);
+		Effect->InheritableOwnedTagsContainer.Added.AddTag(GameplayTags.Player_Block_InputPressed);
+		Effect->InheritableOwnedTagsContainer.Added.AddTag(GameplayTags.Player_Block_InputReleased);
+	}
 	//스택추가
 	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
 	//카운트는 하나
