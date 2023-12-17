@@ -18,7 +18,7 @@ public:
 	void SetWidgetController(UObject* InWdigetController);
 
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<UObject> WidgetController;
+	TWeakObjectPtr<UObject> WidgetController;
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void WidgetControllerSet();
