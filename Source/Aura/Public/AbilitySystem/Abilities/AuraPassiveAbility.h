@@ -19,5 +19,5 @@ public:
         const FGameplayAbilityActivationInfo ActivationInfo,
         const FGameplayEventData* TriggerEventData)override;
 
-
+    void ReveiveDeactivate(const FGameplayTag& AbilityTag);
 };
